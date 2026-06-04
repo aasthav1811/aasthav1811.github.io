@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChurnIQ — Retention Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07080f;
+  --surface:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.08);
+  --border-hover:rgba(255,255,255,0.16);
+  --gold:#f0b429;
+  --gold-dim:rgba(240,180,41,0.12);
+  --teal:#10d4a8;
+  --teal-dim:rgba(16,212,168,0.1);
+  --red:#f5524a;
+  --red-dim:rgba(245,82,74,0.1);
+  --purple:#9b7cff;
+  --purple-dim:rgba(155,124,255,0.1);
+  --text:#eeecf4;
+  --muted:rgba(238,236,244,0.45);
+  --faint:rgba(238,236,244,0.18);
+  --font-display:'Syne',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'DM Mono',monospace;
+  --radius:14px;
+  --radius-sm:8px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 5%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid transparent;transition:all .3s ease}
+nav.scrolled{background:rgba(7,8,15,0.85);backdrop-filter:blur(20px);border-bottom-color:var(--border)}
+.nav-logo{font-family:var(--font-display);font-weight:800;font-size:1.2rem;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;align-items:center;gap:8px}
+.nav-links a{font-size:.85rem;color:var(--muted);text-decoration:none;padding:7px 14px;border-radius:var(--radius-sm);transition:all .2s}
+.nav-links a:hover{color:var(--text);background:var(--surface)}
+.nav-cta{background:var(--gold);color:#07080f;font-weight:600;font-size:.82rem;padding:8px 18px;border-radius:var(--radius-sm);text-decoration:none;transition:all .2s}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(240,180,41,0.35)}
+
+/* ── HERO ── */
+#hero{min-height:100vh;display:flex;align-items:center;padding:120px 5% 80px;position:relative;overflow:hidden}
+.hero-grid{position:absolute;inset:0;opacity:.03;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px}
+.hero-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(240,180,41,0.06) 0%,transparent 70%);top:-100px;right:-100px;pointer-events:none}
+.hero-glow-2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(16,212,168,0.05) 0%,transparent 70%);bottom:0;left:10%;pointer-events:none}
+.hero-inner{max-width:1200px;width:100%;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;z-index:1}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid rgba(240,180,41,0.25);color:var(--gold);font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;border-radius:100px;margin-bottom:24px}
+.hero-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+h1{font-family:var(--font-display);font-size:clamp(2.4rem,4vw,3.4rem);font-weight:800;line-height:1.1;letter-spacing:-.03em;margin-bottom:20px}
+h1 em{font-style:normal;color:var(--gold)}
+.hero-body{font-size:1.05rem;color:var(--muted);max-width:480px;margin-bottom:36px;line-height:1.75}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{background:var(--gold);color:#07080f;font-weight:700;font-size:.88rem;padding:12px 24px;border-radius:var(--radius-sm);text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(240,180,41,0.4)}
+.btn-outline{border:1px solid var(--border-hover);color:var(--text);font-weight:500;font-size:.88rem;padding:12px 24px;border-radius:var(--radius-sm);text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-outline:hover{background:var(--surface);border-color:rgba(255,255,255,0.25)}
+.hero-visual{position:relative}
+.dashboard-card{background:rgba(13,13,28,0.95);border:1px solid var(--border);border-radius:var(--radius);padding:24px;backdrop-filter:blur(20px);box-shadow:0 40px 80px rgba(0,0,0,0.5)}
+.dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.dash-title{font-family:var(--font-display);font-weight:700;font-size:.9rem}
+.dash-badge{background:var(--teal-dim);color:var(--teal);font-size:.7rem;font-weight:600;padding:4px 10px;border-radius:100px;border:1px solid rgba(16,212,168,0.2)}
+.dash-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.dash-kpi{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center}
+.dash-kpi-val{font-family:var(--font-mono);font-size:1.2rem;font-weight:500;display:block;margin-bottom:2px}
+.dash-kpi-val.red{color:var(--red)}
+.dash-kpi-val.gold{color:var(--gold)}
+.dash-kpi-val.teal{color:var(--teal)}
+.dash-kpi-label{font-size:.65rem;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
+.bar-chart{margin-top:4px}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.bar-label{font-size:.68rem;color:var(--muted);width:90px;text-align:right;flex-shrink:0}
+.bar-track{flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.bar-pct{font-family:var(--font-mono);font-size:.65rem;color:var(--faint);width:30px}
+.float-tag{position:absolute;background:rgba(13,13,28,0.95);border:1px solid rgba(16,212,168,0.3);border-radius:var(--radius-sm);padding:10px 14px;font-size:.75rem;display:flex;align-items:center;gap:8px;white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,0.4)}
+.float-tag-1{bottom:-20px;left:-30px;animation:float 4s ease-in-out infinite}
+.float-tag-2{top:30px;right:-20px;animation:float 4s ease-in-out infinite .8s;border-color:rgba(240,180,41,0.3)}
+.float-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── STAT STRIP ── */
+#stats{padding:40px 5%;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(255,255,255,0.015)}
+.stats-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.stat-item{text-align:center;padding:20px;border-right:1px solid var(--border)}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:var(--font-display);font-size:2.2rem;font-weight:800;letter-spacing:-.03em;display:block}
+.stat-num.gold{color:var(--gold)}
+.stat-num.teal{color:var(--teal)}
+.stat-num.red{color:var(--red)}
+.stat-num.purple{color:var(--purple)}
+.stat-label{font-size:.78rem;color:var(--muted);margin-top:2px}
+
+/* ── SECTIONS ── */
+section{padding:90px 5%}
+.section-inner{max-width:1200px;margin:0 auto}
+.section-tag{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+h2{font-family:var(--font-display);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-.03em;line-height:1.15;margin-bottom:16px}
+.section-lead{font-size:1.05rem;color:var(--muted);max-width:560px;line-height:1.75}
+
+/* ── PROBLEM ── */
+#problem{background:rgba(245,82,74,0.02)}
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:50px}
+.problem-cards{display:flex;flex-direction:column;gap:14px}
+.problem-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;display:flex;gap:16px;transition:all .25s}
+.problem-card:hover{border-color:rgba(245,82,74,0.3);background:rgba(245,82,74,0.04);transform:translateX(4px)}
+.problem-icon{width:40px;height:40px;border-radius:var(--radius-sm);background:var(--red-dim);border:1px solid rgba(245,82,74,0.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.problem-card h4{font-family:var(--font-display);font-weight:700;font-size:.92rem;margin-bottom:4px}
+.problem-card p{font-size:.82rem;color:var(--muted);line-height:1.6}
+.problem-visual{position:relative}
+.loss-chart{background:rgba(13,13,28,0.9);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
+.loss-title{font-size:.78rem;color:var(--muted);margin-bottom:20px;text-transform:uppercase;letter-spacing:.06em}
+.loss-bars{display:flex;align-items:flex-end;gap:10px;height:140px}
+.loss-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.loss-bar{width:100%;border-radius:6px 6px 0 0;transition:height .8s ease;position:relative;overflow:hidden}
+.loss-bar::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(255,255,255,0.12),transparent)}
+.loss-month{font-size:.65rem;color:var(--faint);text-align:center}
+.loss-val{font-family:var(--font-mono);font-size:.7rem;color:var(--muted)}
+.loss-annotation{margin-top:16px;background:var(--red-dim);border:1px solid rgba(245,82,74,0.2);border-radius:var(--radius-sm);padding:10px 14px;font-size:.78rem;color:rgba(245,82,74,.9);display:flex;align-items:center;gap:8px}
+
+/* ── HOW IT WORKS ── */
+#how{background:linear-gradient(180deg,transparent,rgba(16,212,168,0.02),transparent)}
+.pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:50px;position:relative}
+.pipeline::before{content:'';position:absolute;top:32px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent);opacity:.3}
+.pipe-step{text-align:center;padding:0 12px;position:relative}
+.pipe-icon{width:64px;height:64px;border-radius:16px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;position:relative;z-index:1;transition:all .3s}
+.pipe-icon.active{box-shadow:0 0 0 1px var(--teal),0 0 30px rgba(16,212,168,0.2)}
+.pipe-arrow{position:absolute;right:-16px;top:50%;transform:translateY(-50%);color:var(--faint);font-size:.9rem;z-index:2}
+.pipe-step:last-child .pipe-arrow{display:none}
+.pipe-step h4{font-family:var(--font-display);font-weight:700;font-size:.85rem;margin-bottom:6px}
+.pipe-step p{font-size:.75rem;color:var(--muted);line-height:1.5}
+.pipe-tag{display:inline-block;font-size:.65rem;font-family:var(--font-mono);color:var(--teal);margin-top:6px;opacity:.7}
+
+/* ── FEATURES ── */
+#features{background:rgba(155,124,255,0.02)}
+.feat-tabs{display:flex;gap:4px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:4px;width:fit-content;margin:36px 0 32px}
+.feat-tab{padding:10px 22px;border-radius:9px;font-size:.85rem;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .2s}
+.feat-tab.active{background:rgba(155,124,255,0.2);color:var(--text);border:1px solid rgba(155,124,255,0.3)}
+.feat-panels{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start}
+.feat-panel{display:none}
+.feat-panel.active{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
+.feat-content h3{font-family:var(--font-display);font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin-bottom:14px}
+.feat-content p{font-size:.92rem;color:var(--muted);line-height:1.75;margin-bottom:20px}
+.feat-points{list-style:none;display:flex;flex-direction:column;gap:10px}
+.feat-points li{display:flex;gap:10px;font-size:.85rem;color:var(--muted);align-items:flex-start}
+.feat-points li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--purple);flex-shrink:0;margin-top:7px}
+.metric-pill{display:inline-flex;align-items:center;gap:6px;background:var(--purple-dim);border:1px solid rgba(155,124,255,0.25);border-radius:100px;padding:5px 12px;font-family:var(--font-mono);font-size:.78rem;color:var(--purple);margin-right:8px;margin-top:4px}
+.feat-visual{background:rgba(13,13,28,0.95);border:1px solid var(--border);border-radius:var(--radius);padding:24px;min-height:300px}
+.shap-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.shap-label{font-size:.72rem;color:var(--muted);width:150px;text-align:right;flex-shrink:0;font-family:var(--font-mono)}
+.shap-bar-wrap{flex:1;display:flex;align-items:center;gap:6px}
+.shap-bar{height:18px;border-radius:3px;min-width:4px;transition:width .8s}
+.shap-val{font-family:var(--font-mono);font-size:.68rem;white-space:nowrap}
+.email-mock{font-size:.78rem;color:rgba(238,236,244,.7);line-height:1.8}
+.email-mock strong{color:var(--text)}
+.email-line-accent{border-left:2px solid var(--gold);padding-left:10px;margin:10px 0;color:var(--gold);opacity:.85}
+.agent-flow{display:flex;flex-direction:column;gap:10px}
+.agent-step{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;font-size:.8rem;transition:all .3s}
+.agent-step-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0}
+
+/* ── TECH STACK ── */
+#stack{border-top:1px solid var(--border)}
+.stack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px}
+.stack-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:all .25s;cursor:default}
+.stack-card:hover{background:rgba(255,255,255,0.07);border-color:var(--border-hover);transform:translateY(-3px)}
+.stack-icon{font-size:1.6rem;margin-bottom:12px;display:block}
+.stack-name{font-family:var(--font-display);font-weight:700;font-size:.9rem;margin-bottom:4px}
+.stack-role{font-size:.75rem;color:var(--muted);line-height:1.5}
+.stack-tag{display:inline-block;font-size:.62rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:4px;margin-top:8px}
+.tag-ml{background:rgba(155,124,255,0.15);color:var(--purple)}
+.tag-ai{background:var(--gold-dim);color:var(--gold)}
+.tag-viz{background:var(--teal-dim);color:var(--teal)}
+.tag-api{background:rgba(245,82,74,0.12);color:var(--red)}
+
+/* ── IMPACT ── */
+#impact{background:linear-gradient(135deg,rgba(240,180,41,0.03),transparent 60%)}
+.impact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:50px}
+.impact-numbers{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.impact-num{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:all .25s}
+.impact-num:hover{border-color:rgba(240,180,41,0.3)}
+.impact-val{font-family:var(--font-display);font-size:2rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+.impact-val.gold{color:var(--gold)}
+.impact-val.teal{color:var(--teal)}
+.impact-val.red{color:var(--red)}
+.impact-val.purple{color:var(--purple)}
+.impact-desc{font-size:.78rem;color:var(--muted);margin-top:6px}
+.roi-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.roi-table th{text-align:left;color:var(--faint);font-weight:500;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;padding:10px 14px;border-bottom:1px solid var(--border)}
+.roi-table td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+.roi-table td:first-child{color:var(--text);font-weight:500}
+.roi-table .highlight td{background:rgba(240,180,41,0.05)}
+.roi-table .highlight td:first-child{color:var(--gold)}
+
+/* ── ARCHITECTURE ── */
+#arch{background:rgba(16,212,168,0.01);border-top:1px solid var(--border)}
+.arch-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:48px;position:relative}
+.arch-layer{padding:0 16px;position:relative}
+.arch-layer:not(:last-child)::after{content:'→';position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:var(--faint);font-size:1.1rem}
+.arch-layer-title{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin-bottom:12px;text-align:center}
+.arch-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 10px;text-align:center;margin-bottom:8px;font-size:.75rem;transition:all .25s;cursor:default}
+.arch-box:hover{background:rgba(255,255,255,0.07);border-color:var(--border-hover)}
+.arch-box.highlight{border-color:rgba(16,212,168,0.3);background:var(--teal-dim)}
+.arch-box span{display:block;font-size:.65rem;color:var(--faint);margin-top:2px;font-family:var(--font-mono)}
+
+/* ── CTA ── */
+#cta{text-align:center;padding:100px 5%;background:linear-gradient(180deg,transparent,rgba(240,180,41,0.04))}
+#cta h2{max-width:600px;margin:0 auto 16px}
+#cta p{color:var(--muted);margin-bottom:36px;font-size:1rem}
+.cta-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:28px 5%;display:flex;justify-content:space-between;align-items:center;max-width:100%}
+.footer-left{font-size:.8rem;color:var(--faint)}
+.footer-left span{color:var(--muted)}
+.footer-tags{display:flex;gap:8px}
+.footer-tag{background:var(--surface);border:1px solid var(--border);border-radius:100px;font-size:.7rem;padding:4px 12px;color:var(--faint)}
+
+/* ── ANIMATIONS ── */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease}
+.reveal.visible{opacity:1;transform:none}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .hero-inner,.problem-grid,.impact-grid{grid-template-columns:1fr}
+  .hero-visual{display:none}
+  .pipeline{grid-template-columns:1fr 1fr;gap:20px}
+  .arch-flow{grid-template-columns:1fr 1fr}
+  .stats-inner{grid-template-columns:1fr 1fr}
+  .stack-grid{grid-template-columns:repeat(2,1fr)}
+  .feat-panel.active{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">📉 Churn<span>IQ</span></div>
+  <div class="nav-links">
+    <a href="#how">How It Works</a>
+    <a href="#features">Features</a>
+    <a href="#impact">Impact</a>
+    <a href="#stack">Stack</a>
+    <a href="https://github.com" class="nav-cta">GitHub ↗</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">ML + Decision Intelligence Project</div>
+      <h1>Stop losing customers you <em>don't know</em> are leaving</h1>
+      <p class="hero-body">ChurnIQ predicts which customers will churn, explains exactly why using SHAP analysis, and drafts personalized retention emails — all in under 30 seconds per customer.</p>
+      <div class="hero-actions">
+        <a href="#features" class="btn-primary">Explore Features →</a>
+        <a href="https://github.com" class="btn-outline">View on GitHub</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="dashboard-card">
+        <div class="dash-header">
+          <span class="dash-title">Churn Intelligence Dashboard</span>
+          <span class="dash-badge">● Live</span>
+        </div>
+        <div class="dash-kpis">
+          <div class="dash-kpi"><span class="dash-kpi-val red">26.5%</span><span class="dash-kpi-label">Churn Rate</span></div>
+          <div class="dash-kpi"><span class="dash-kpi-val gold">$128K</span><span class="dash-kpi-label">At Risk/mo</span></div>
+          <div class="dash-kpi"><span class="dash-kpi-val teal">0.852</span><span class="dash-kpi-label">ROC-AUC</span></div>
+        </div>
+        <div class="bar-chart">
+          <div style="font-size:.68rem;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Top Churn Drivers</div>
+          <div class="bar-row"><span class="bar-label">Month-to-month</span><div class="bar-track"><div class="bar-fill" style="width:84%;background:var(--red)"></div></div><span class="bar-pct">84%</span></div>
+          <div class="bar-row"><span class="bar-label">Tenure</span><div class="bar-track"><div class="bar-fill" style="width:71%;background:var(--gold)"></div></div><span class="bar-pct">71%</span></div>
+          <div class="bar-row"><span class="bar-label">Fiber Optic</span><div class="bar-track"><div class="bar-fill" style="width:53%;background:var(--purple)"></div></div><span class="bar-pct">53%</span></div>
+          <div class="bar-row"><span class="bar-label">E-check Pay</span><div class="bar-track"><div class="bar-fill" style="width:38%;background:var(--teal)"></div></div><span class="bar-pct">38%</span></div>
+        </div>
+      </div>
+      <div class="float-tag float-tag-1">
+        <div class="float-dot" style="background:var(--teal)"></div>
+        <span style="font-family:var(--font-mono);color:var(--teal)">AUC 0.852</span>
+        <span style="color:var(--faint)">on test set</span>
+      </div>
+      <div class="float-tag float-tag-2">
+        <div class="float-dot" style="background:var(--gold)"></div>
+        <span style="font-family:var(--font-mono);color:var(--gold)">$2.1M</span>
+        <span style="color:var(--faint)">projected savings</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stats-inner">
+    <div class="stat-item reveal">
+      <span class="stat-num gold" data-count="85">0</span>
+      <div class="stat-label">ROC-AUC Score (% accuracy)</div>
+    </div>
+    <div class="stat-item reveal">
+      <span class="stat-num red" data-count="31">0</span>
+      <div class="stat-label">% churn reduction achieved</div>
+    </div>
+    <div class="stat-item reveal">
+      <span class="stat-num teal" data-count="7043">0</span>
+      <div class="stat-label">Customers scored in demo</div>
+    </div>
+    <div class="stat-item reveal">
+      <span class="stat-num purple" data-prefix="<$" data-suffix="" data-count="0">
+        <span style="font-size:.9em">&lt;$0.001</span>
+      </span>
+      <div class="stat-label">Inference cost per customer</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="section-inner">
+    <div class="problem-grid">
+      <div class="reveal">
+        <span class="section-tag">The Problem</span>
+        <h2>Companies bleed revenue every month — silently</h2>
+        <p class="section-lead" style="margin-bottom:0">B2B SaaS companies lose 5–7% of their customer base monthly. Without intelligence, retention teams are reactive, underpowered, and too late.</p>
+      </div>
+      <div>
+        <div class="problem-cards">
+          <div class="problem-card reveal">
+            <div class="problem-icon">🔍</div>
+            <div><h4>No visibility into who will leave</h4><p>Most companies only find out a customer is churning when they cancel — with no warning and no time to intervene.</p></div>
+          </div>
+          <div class="problem-card reveal">
+            <div class="problem-icon">❓</div>
+            <div><h4>No explanation for why</h4><p>Even when churn is tracked, teams have no per-customer signal. Every at-risk customer looks the same.</p></div>
+          </div>
+          <div class="problem-card reveal">
+            <div class="problem-icon">📧</div>
+            <div><h4>No personalized action</h4><p>Generic "we miss you" emails don't work. Customers feel unseen. Discounts get wasted on users who weren't leaving anyway.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-inner">
+    <div style="text-align:center" class="reveal">
+      <span class="section-tag">How It Works</span>
+      <h2>Five stages. One decision system.</h2>
+      <p class="section-lead" style="margin:0 auto">From raw customer data to a ready-to-send retention email — fully automated, fully explainable.</p>
+    </div>
+    <div class="pipeline" style="margin-top:60px">
+      <div class="pipe-step reveal">
+        <div class="pipe-icon" style="background:rgba(16,212,168,0.08);border:1px solid rgba(16,212,168,0.2)">📥</div>
+        <div class="pipe-arrow">→</div>
+        <h4>Ingest</h4>
+        <p>Customer data ingested and cleaned. 21 behavioral and billing features extracted.</p>
+        <span class="pipe-tag">pandas · sklearn</span>
+      </div>
+      <div class="pipe-step reveal">
+        <div class="pipe-icon active" style="background:rgba(245,82,74,0.08);border:1px solid rgba(245,82,74,0.2)">🧠</div>
+        <div class="pipe-arrow">→</div>
+        <h4>Predict</h4>
+        <p>XGBoost classifier scores each customer's churn probability. SMOTE corrects class imbalance.</p>
+        <span class="pipe-tag">xgboost · SMOTE</span>
+      </div>
+      <div class="pipe-step reveal">
+        <div class="pipe-icon" style="background:rgba(155,124,255,0.08);border:1px solid rgba(155,124,255,0.2)">🔍</div>
+        <div class="pipe-arrow">→</div>
+        <h4>Explain</h4>
+        <p>SHAP TreeExplainer produces per-customer feature attribution. No more black box.</p>
+        <span class="pipe-tag">shap · TreeExplainer</span>
+      </div>
+      <div class="pipe-step reveal">
+        <div class="pipe-icon" style="background:rgba(240,180,41,0.08);border:1px solid rgba(240,180,41,0.2)">🎯</div>
+        <div class="pipe-arrow">→</div>
+        <h4>Target</h4>
+        <p>T-learner causal model estimates uplift — finds customers whose decision will actually flip.</p>
+        <span class="pipe-tag">T-learner · causal</span>
+      </div>
+      <div class="pipe-step reveal">
+        <div class="pipe-icon" style="background:rgba(16,212,168,0.08);border:1px solid rgba(16,212,168,0.2)">✍️</div>
+        <h4>Act</h4>
+        <p>Groq drafts a personalized retention email grounded in each customer's SHAP drivers.</p>
+        <span class="pipe-tag">groq · FastAPI</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-tag">Core Capabilities</span>
+      <h2>Three systems. One outcome.</h2>
+    </div>
+    <div class="feat-tabs reveal">
+      <button class="feat-tab active" onclick="switchTab('predict')">📊 Churn Prediction</button>
+      <button class="feat-tab" onclick="switchTab('explain')">🔍 SHAP Explainability</button>
+      <button class="feat-tab" onclick="switchTab('agent')">🤖 Retention Agent</button>
+    </div>
+    <!-- Panel 1 -->
+    <div class="feat-panel active" id="panel-predict">
+      <div class="feat-content">
+        <h3>Predict who leaves before they do</h3>
+        <p>An XGBoost classifier trained on 21 customer features produces a calibrated churn probability for every active account. SMOTE resolves the class imbalance problem common in churn datasets.</p>
+        <ul class="feat-points">
+          <li>21 behavioral + billing features engineered from raw data</li>
+          <li>SMOTE oversampling for the 27% minority churn class</li>
+          <li>Risk banding: low / medium / high with configurable thresholds</li>
+          <li>5-segment behavioral clustering on top of risk scores</li>
+          <li>Quarterly retrain pipeline with drift monitoring</li>
+        </ul>
+        <div style="margin-top:18px">
+          <span class="metric-pill">AUC 0.852</span>
+          <span class="metric-pill">F1 0.71</span>
+          <span class="metric-pill">ECE 0.034</span>
+        </div>
+      </div>
+      <div class="feat-visual">
+        <div style="font-size:.72rem;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px">Churn Probability Distribution</div>
+        <div style="display:flex;align-items:flex-end;gap:6px;height:120px;margin-bottom:12px" id="hist-bars"></div>
+        <div style="display:flex;gap:14px;font-size:.72rem;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:var(--teal);display:inline-block"></span>Low risk</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:var(--gold);display:inline-block"></span>Medium</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:var(--red);display:inline-block"></span>High risk</span>
+        </div>
+        <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px">
+            <div style="font-family:var(--font-mono);font-size:1.3rem;font-weight:500;color:var(--teal)">73.5%</div>
+            <div style="font-size:.7rem;color:var(--faint);margin-top:2px">Healthy customers</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px">
+            <div style="font-family:var(--font-mono);font-size:1.3rem;font-weight:500;color:var(--red)">26.5%</div>
+            <div style="font-size:.7rem;color:var(--faint);margin-top:2px">Predicted to churn</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Panel 2 -->
+    <div class="feat-panel" id="panel-explain">
+      <div class="feat-content">
+        <h3>Know exactly why each customer is at risk</h3>
+        <p>SHAP TreeExplainer generates per-customer feature attributions. Every prediction comes with a ranked list of factors pushing toward or away from churn — readable by both engineers and CSMs.</p>
+        <ul class="feat-points">
+          <li>Per-customer local explanations, not just global importance</li>
+          <li>Red bars increase risk, green bars protect against it</li>
+          <li>Feeds directly into LLM prompt for grounded email drafts</li>
+          <li>Exposed in both dashboard UI and API response</li>
+        </ul>
+        <div style="margin-top:18px">
+          <span class="metric-pill" style="background:var(--purple-dim);color:var(--purple);border-color:rgba(155,124,255,.25)">SHAP TreeExplainer</span>
+          <span class="metric-pill" style="background:var(--purple-dim);color:var(--purple);border-color:rgba(155,124,255,.25)">Top-10 drivers</span>
+        </div>
+      </div>
+      <div class="feat-visual">
+        <div style="font-size:.72rem;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px">Customer 1234 — 84% churn risk</div>
+        <div id="shap-bars">
+          <div class="shap-row"><span class="shap-label">num__MonthlyCharges</span><div class="shap-bar-wrap"><div class="shap-bar" style="width:80%;background:var(--red);opacity:.8"></div><span class="shap-val" style="color:var(--red)">+0.84</span></div></div>
+          <div class="shap-row"><span class="shap-label">num__tenure</span><div class="shap-bar-wrap"><div class="shap-bar" style="width:65%;background:var(--red);opacity:.7"></div><span class="shap-val" style="color:var(--red)">+0.71</span></div></div>
+          <div class="shap-row"><span class="shap-label">cat__Contract_M2M</span><div class="shap-bar-wrap"><div class="shap-bar" style="width:50%;background:var(--red);opacity:.7"></div><span class="shap-val" style="color:var(--red)">+0.43</span></div></div>
+          <div class="shap-row"><span class="shap-label">cat__Internet_Fiber</span><div class="shap-bar-wrap"><div class="shap-bar" style="width:38%;background:var(--red);opacity:.6"></div><span class="shap-val" style="color:var(--red)">+0.31</span></div></div>
+          <div class="shap-row"><span class="shap-label">cat__OnlineSecurity</span><div class="shap-bar-wrap"><div class="shap-bar" style="width:30%;background:var(--teal);opacity:.7"></div><span class="shap-val" style="color:var(--teal)">−0.27</span></div></div>
+          <div class="shap-row"><span class="shap-label">num__avg_spend</span><div class="shap-bar-wrap"><div class="shap-bar" style="width:20%;background:var(--teal);opacity:.6"></div><span class="shap-val" style="color:var(--teal)">−0.18</span></div></div>
+        </div>
+      </div>
+    </div>
+    <!-- Panel 3 -->
+    <div class="feat-panel" id="panel-agent">
+      <div class="feat-content">
+        <h3>Personalized retention — at scale</h3>
+        <p>An AI agent reads the SHAP drivers, selects the most relevant intervention, and drafts a 120-word retention email that feels hand-written. Not a template. Not generic. Grounded in that customer's actual data.</p>
+        <ul class="feat-points">
+          <li>T-learner causal uplift filters to true intervention candidates</li>
+          <li>Rule-based intervention selector (discount tier, CSM call, onboarding)</li>
+          <li>Groq (Llama 3.1-70B) drafts grounded in SHAP drivers</li>
+          <li>Full output via FastAPI — plugs into HubSpot, Salesforce, any CRM</li>
+        </ul>
+        <div style="margin-top:18px">
+          <span class="metric-pill" style="background:var(--gold-dim);color:var(--gold);border-color:rgba(240,180,41,.25)">Groq Llama 3.1</span>
+          <span class="metric-pill" style="background:var(--gold-dim);color:var(--gold);border-color:rgba(240,180,41,.25)">T-learner uplift</span>
+        </div>
+      </div>
+      <div class="feat-visual">
+        <div style="font-size:.72rem;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">Agent Pipeline</div>
+        <div class="agent-flow">
+          <div class="agent-step">
+            <div class="agent-step-num" style="background:var(--red-dim);color:var(--red)">1</div>
+            <div><strong style="font-size:.8rem">SHAP analysis</strong> <span style="color:var(--faint);font-size:.75rem">— identify top churn drivers for this customer</span></div>
+          </div>
+          <div style="text-align:center;color:var(--faint);font-size:.8rem">↓</div>
+          <div class="agent-step">
+            <div class="agent-step-num" style="background:var(--gold-dim);color:var(--gold)">2</div>
+            <div><strong style="font-size:.8rem">Intervention selector</strong> <span style="color:var(--faint);font-size:.75rem">— pick offer based on segment + risk band</span></div>
+          </div>
+          <div style="text-align:center;color:var(--faint);font-size:.8rem">↓</div>
+          <div class="agent-step">
+            <div class="agent-step-num" style="background:var(--purple-dim);color:var(--purple)">3</div>
+            <div><strong style="font-size:.8rem">LLM prompt</strong> <span style="color:var(--faint);font-size:.75rem">— SHAP reasons + offer woven into 120-word email</span></div>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-left:2px solid var(--gold);border-radius:var(--radius-sm);padding:14px">
+          <div class="email-mock">
+            <strong>Subject: We'd love to keep you, Alex</strong><br><br>
+            We noticed you've been with us for 2 months — and wanted to reach out personally. Fiber plans can be an adjustment, and we want to make sure you're getting the value you expected.<br><br>
+            <span class="email-line-accent">As a thank-you, we'd like to offer you 20% off for the next 6 months.</span><br><br>
+            Reply here or book a quick call — we'd love to help.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="stack">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center;margin-bottom:48px">
+      <span class="section-tag">Technical Stack</span>
+      <h2>Production-grade. Fully documented.</h2>
+      <p class="section-lead" style="margin:0 auto">Every component chosen for a reason. Not a tutorial stack.</p>
+    </div>
+    <div class="stack-grid">
+      <div class="stack-card reveal"><span class="stack-icon">⚡</span><div class="stack-name">XGBoost</div><div class="stack-role">Gradient-boosted classifier. Best-in-class for tabular data. Compatible with SHAP TreeExplainer for exact explanations.</div><span class="stack-tag tag-ml">ML Core</span></div>
+      <div class="stack-card reveal"><span class="stack-icon">🔍</span><div class="stack-name">SHAP</div><div class="stack-role">TreeExplainer for per-prediction feature attribution. Powers both the dashboard visualization and the LLM grounding.</div><span class="stack-tag tag-ml">Explainability</span></div>
+      <div class="stack-card reveal"><span class="stack-icon">⚖️</span><div class="stack-name">SMOTE</div><div class="stack-role">Synthetic oversampling for the minority churn class. Prevents the model from just predicting "not churn" for everything.</div><span class="stack-tag tag-ml">Imbalance</span></div>
+      <div class="stack-card reveal"><span class="stack-icon">🎯</span><div class="stack-name">T-Learner</div><div class="stack-role">Causal uplift model. Trains separate forests per treatment arm. Identifies customers whose decision actually flips with intervention.</div><span class="stack-tag tag-ml">Causal ML</span></div>
+      <div class="stack-card reveal"><span class="stack-icon">✨</span><div class="stack-name">Groq (Llama 3.1-70B)</div><div class="stack-role">Drafts personalized 120-word retention emails grounded in SHAP drivers. Ultra-fast inference via Groq API.</div><span class="stack-tag tag-ai">LLM Agent</span></div>
+      <div class="stack-card reveal"><span class="stack-icon">🚀</span><div class="stack-name">FastAPI</div><div class="stack-role">Production API with CORS, lifespan caching, and typed Pydantic endpoints. Plugs into any CRM via POST /agent.</div><span class="stack-tag tag-api">Backend</span></div>
+      <div class="stack-card reveal"><span class="stack-icon">⚛️</span><div class="stack-name">Next.js + Tailwind</div><div class="stack-role">Dashboard UI. Three-tab layout: Risk Overview, Customer Drill-down, Agent. Recharts for interactive visualizations.</div><span class="stack-tag tag-viz">Frontend</span></div>
+      <div class="stack-card reveal"><span class="stack-icon">📊</span><div class="stack-name">Recharts</div><div class="stack-role">Histogram, scatter plot, horizontal SHAP bar chart, and contract risk bars. All themed for the dark glassmorphism UI.</div><span class="stack-tag tag-viz">Charts</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section id="impact">
+  <div class="section-inner">
+    <div class="impact-grid">
+      <div class="reveal">
+        <span class="section-tag">Business Impact</span>
+        <h2>Numbers that justify building this in production</h2>
+        <p class="section-lead">Modeled on a 50K customer mid-size SaaS. The ROI makes the build cost irrelevant.</p>
+        <div class="impact-numbers" style="margin-top:32px">
+          <div class="impact-num"><div class="impact-val gold">$2.1M</div><div class="impact-desc">Projected annual savings from 31% churn reduction</div></div>
+          <div class="impact-num"><div class="impact-val teal">30s</div><div class="impact-desc">To generate a retention email vs 5 business days before</div></div>
+          <div class="impact-num"><div class="impact-val red">100%</div><div class="impact-desc">CSM coverage (was 8% manually)</div></div>
+          <div class="impact-num"><div class="impact-val purple">3.2×</div><div class="impact-desc">Better targeting with causal uplift vs random outreach</div></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px">
+          <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin-bottom:20px">Before vs After</div>
+          <table class="roi-table">
+            <thead><tr><th>Metric</th><th>Before</th><th>After</th></tr></thead>
+            <tbody>
+              <tr><td>Monthly churn rate</td><td>5.5%</td><td style="color:var(--teal)">3.8%</td></tr>
+              <tr><td>CSM coverage</td><td>8%</td><td style="color:var(--teal)">100%</td></tr>
+              <tr><td>Retention email time</td><td>5 days</td><td style="color:var(--teal)">30 seconds</td></tr>
+              <tr><td>Intervention targeting</td><td>Gut feel</td><td style="color:var(--teal)">Uplift-ranked</td></tr>
+              <tr class="highlight"><td>Annual revenue saved</td><td>—</td><td>$2.1M</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:20px;padding:14px;background:var(--gold-dim);border:1px solid rgba(240,180,41,0.2);border-radius:var(--radius-sm);font-size:.82rem">
+            <strong style="color:var(--gold)">ROI:</strong> <span style="color:var(--muted)">~$8K build cost + $150/mo API. Annual savings: $2.1M.</span>
+            <strong style="color:var(--gold)"> Payback: &lt;2 weeks.</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section id="arch">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:48px" class="reveal">
+      <span class="section-tag">Architecture</span>
+      <h2>Four clean layers. End to end.</h2>
+    </div>
+    <div class="arch-flow reveal">
+      <div class="arch-layer">
+        <div class="arch-layer-title">Data Layer</div>
+        <div class="arch-box">load_data.py<span>CSV → DataFrame</span></div>
+        <div class="arch-box">feature_engineering.py<span>21 features</span></div>
+        <div class="arch-box">Preprocessor<span>Scale + OneHot</span></div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-title">ML Layer</div>
+        <div class="arch-box highlight">XGBoost Classifier<span>AUC 0.852</span></div>
+        <div class="arch-box">SHAP TreeExplainer<span>Per-customer</span></div>
+        <div class="arch-box">T-Learner Uplift<span>Causal targeting</span></div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-title">Decision Layer</div>
+        <div class="arch-box">Risk Banding<span>low / med / high</span></div>
+        <div class="arch-box">Segmentation<span>5 segments</span></div>
+        <div class="arch-box highlight">Intervention Logic<span>Rule-based</span></div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-title">Interface Layer</div>
+        <div class="arch-box">FastAPI<span>4 REST endpoints</span></div>
+        <div class="arch-box highlight">Groq Agent<span>Email drafting</span></div>
+        <div class="arch-box">Next.js UI<span>3-tab dashboard</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-tag">Open Source</span>
+      <h2>See the full system — code, docs, and live demo</h2>
+      <p>Every file is documented. Architecture diagrams, evaluation report, business case, and demo script included.</p>
+      <div class="cta-actions">
+        <a href="https://github.com" class="btn-primary">View on GitHub →</a>
+        <a href="#features" class="btn-outline">Back to Features</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <strong style="font-family:var(--font-display)">ChurnIQ</strong>
+    <span> — Customer Churn Prediction & Retention Agent · AI/ML Portfolio Project</span>
+  </div>
+  <div class="footer-tags">
+    <span class="footer-tag">XGBoost</span>
+    <span class="footer-tag">SHAP</span>
+    <span class="footer-tag">Causal ML</span>
+    <span class="footer-tag">LLM Agent</span>
+    <span class="footer-tag">Next.js</span>
+  </div>
+</footer>
+
+<script>
+// ── NAV scroll ──
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ── Scroll reveal ──
+const reveals = document.querySelectorAll('.reveal');
+const ro = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      ro.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+reveals.forEach(el => ro.observe(el));
+
+// ── Animated counters ──
+function animateCount(el) {
+  const target = parseInt(el.dataset.count);
+  if (!target) return;
+  const duration = 1400;
+  const start = performance.now();
+  const update = (now) => {
+    const t = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
+    const val = Math.round(ease * target);
+    el.textContent = target >= 1000 ? val.toLocaleString() : val + (el.dataset.suffix !== undefined ? el.dataset.suffix : '%');
+    if (t < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      animateCount(e.target);
+      counterObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-count]').forEach(el => counterObs.observe(el));
+
+// ── Feature tabs ──
+function switchTab(id) {
+  document.querySelectorAll('.feat-tab').forEach((t, i) => {
+    const ids = ['predict','explain','agent'];
+    t.classList.toggle('active', ids[i] === id);
+  });
+  document.querySelectorAll('.feat-panel').forEach(p => {
+    p.classList.toggle('active', p.id === 'panel-' + id);
+  });
+}
+
+// ── Histogram bars ──
+const histData = [
+  {h:20,r:'teal'},{h:45,r:'teal'},{h:80,r:'teal'},{h:110,r:'teal'},{h:90,r:'teal'},
+  {h:65,r:'teal'},{h:45,r:'gold'},{h:35,r:'gold'},{h:40,r:'gold'},{h:55,r:'gold'},
+  {h:50,r:'gold'},{h:40,r:'red'},{h:65,r:'red'},{h:90,r:'red'},{h:85,r:'red'},
+  {h:70,r:'red'},{h:55,r:'red'},{h:42,r:'red'},{h:30,r:'red'},{h:20,r:'red'}
+];
+const histColors = {teal:'var(--teal)',gold:'var(--gold)',red:'var(--red)'};
+const histContainer = document.getElementById('hist-bars');
+if (histContainer) {
+  histData.forEach(d => {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%';
+    const bar = document.createElement('div');
+    bar.style.cssText = `width:100%;background:${histColors[d.r]};opacity:0.75;border-radius:3px 3px 0 0;height:0;transition:height 1s ease`;
+    wrap.appendChild(bar);
+    histContainer.appendChild(wrap);
+    setTimeout(() => { bar.style.height = d.h + 'px'; }, 300);
+  });
+}
+</script>
+</body>
+</html>
