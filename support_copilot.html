@@ -1,421 +1,285 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0d0d12;
-  --bg2:#13131a;
-  --bg3:#1a1a24;
-  --border:#ffffff12;
-  --border2:#ffffff20;
-  --text:#f0f0f5;
-  --muted:#8888aa;
-  --accent:#7c6dfa;
-  --accent2:#a78bfa;
-  --teal:#2dd4bf;
-  --amber:#f59e0b;
-  --red:#f87171;
-  --green:#4ade80;
-}
-body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
-.mono{font-family:'JetBrains Mono',monospace}
-
-/* ── HERO ── */
-.hero{padding:80px 48px 64px;max-width:900px;margin:0 auto;position:relative}
-.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:24px}
-.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:99px;font-size:12px;font-weight:500;letter-spacing:.5px;text-transform:uppercase}
-.pill-accent{background:#7c6dfa18;color:var(--accent2);border:1px solid #7c6dfa30}
-.pill-teal{background:#2dd4bf15;color:var(--teal);border:1px solid #2dd4bf30}
-.pill-amber{background:#f59e0b15;color:var(--amber);border:1px solid #f59e0b30}
-.hero h1{font-size:52px;font-weight:700;line-height:1.1;letter-spacing:-1.5px;margin-bottom:20px}
-.hero h1 span{color:var(--accent2)}
-.hero .sub{font-size:18px;color:var(--muted);max-width:560px;line-height:1.6;margin-bottom:40px}
-.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all .15s}
-.btn-primary{background:var(--accent);color:#fff}
-.btn-primary:hover{background:#6b5ef0}
-.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border2)}
-.btn-ghost:hover{color:var(--text);border-color:#ffffff40;background:#ffffff08}
-
-/* ── STATS BAR ── */
-.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2)}
-.stat-item{padding:28px 32px;border-right:1px solid var(--border)}
-.stat-item:last-child{border-right:none}
-.stat-val{font-size:30px;font-weight:700;letter-spacing:-1px;color:var(--text)}
-.stat-val span{color:var(--accent2)}
-.stat-label{font-size:12px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
-
-/* ── SECTION ── */
-.section{padding:72px 48px;max-width:900px;margin:0 auto}
-.section-label{font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:12px}
-.section-title{font-size:32px;font-weight:700;letter-spacing:-1px;margin-bottom:8px}
-.section-sub{color:var(--muted);margin-bottom:48px;max-width:500px}
-
-/* ── PIPELINE ── */
-.pipeline{display:flex;flex-direction:column;gap:0}
-.pipeline-agent{display:flex;align-items:flex-start;gap:20px;cursor:pointer;padding:20px 24px;border-radius:14px;border:1px solid transparent;transition:all .2s;position:relative}
-.pipeline-agent:hover,.pipeline-agent.active{background:var(--bg3);border-color:var(--border2)}
-.pipeline-agent.active{border-color:#7c6dfa35}
-.agent-index{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;min-width:20px;margin-top:3px}
-.agent-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.agent-body{flex:1}
-.agent-name{font-size:15px;font-weight:600;margin-bottom:3px}
-.agent-desc{font-size:13px;color:var(--muted);line-height:1.5}
-.agent-tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 10px;border-radius:99px;margin-top:8px;font-weight:500}
-.tag-llm{background:#7c6dfa15;color:var(--accent2);border:1px solid #7c6dfa25}
-.tag-rag{background:#2dd4bf15;color:var(--teal);border:1px solid #2dd4bf25}
-.tag-rules{background:#ffffff08;color:var(--muted);border:1px solid var(--border)}
-.connector{width:1px;height:20px;background:var(--border2);margin-left:79px}
-.agent-detail{overflow:hidden;max-height:0;transition:max-height .3s ease;margin-top:0}
-.agent-detail.open{max-height:120px}
-.detail-box{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-top:12px;font-size:13px;color:var(--muted);line-height:1.6}
-.detail-box code{background:#7c6dfa18;color:var(--accent2);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px}
-
-/* ── TECH STACK ── */
-.stack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.stack-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color .2s}
-.stack-card:hover{border-color:var(--border2)}
-.stack-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:18px}
-.stack-name{font-size:14px;font-weight:600;margin-bottom:4px}
-.stack-role{font-size:12px;color:var(--muted)}
-.stack-free{font-size:11px;color:var(--green);background:#4ade8015;border:1px solid #4ade8025;padding:2px 8px;border-radius:99px;margin-top:8px;display:inline-block}
-
-/* ── FEATURES ── */
-.features-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.feature-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;transition:all .2s}
-.feature-card:hover{border-color:var(--border2);background:var(--bg3)}
-.feat-icon{font-size:22px;margin-bottom:12px}
-.feat-title{font-size:15px;font-weight:600;margin-bottom:6px}
-.feat-desc{font-size:13px;color:var(--muted);line-height:1.5}
-
-/* ── DEMO PANEL ── */
-.demo-panel{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden}
-.demo-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg3)}
-.demo-dots{display:flex;gap:6px}
-.dot{width:10px;height:10px;border-radius:50%}
-.demo-title-bar{flex:1;text-align:center;font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace}
-.demo-body{padding:24px}
-.demo-ticket{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px}
-.ticket-meta{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-.demo-badge{font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500;font-family:'JetBrains Mono',monospace}
-.badge-cat{background:#7c6dfa18;color:var(--accent2);border:1px solid #7c6dfa30}
-.badge-urg{background:#f87171 18;color:var(--red);border:1px solid #f8717130;background:#f8717115}
-.badge-sent{background:#f59e0b15;color:var(--amber);border:1px solid #f59e0b30}
-.ticket-body{font-size:13px;color:var(--muted);line-height:1.6}
-.demo-response{background:var(--bg);border:1px solid #4ade8025;border-radius:10px;padding:16px}
-.response-label{font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;font-weight:600}
-.response-text{font-size:13px;color:var(--muted);line-height:1.7}
-.demo-actions{display:flex;gap:8px;margin-top:12px}
-.demo-btn{font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all .15s}
-.demo-btn:hover{color:var(--text);background:var(--bg3)}
-.demo-btn.approve:hover{color:var(--green);border-color:#4ade8040}
-.trace-row{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
-.trace-chip{font-size:11px;padding:4px 10px;border-radius:6px;background:var(--bg3);border:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace}
-.trace-chip.done{color:var(--accent2);border-color:#7c6dfa30;background:#7c6dfa10}
-
-/* ── FOOTER ── */
-.footer-bar{border-top:1px solid var(--border);padding:32px 48px;display:flex;justify-content:space-between;align-items:center;max-width:900px;margin:0 auto}
-.footer-left{font-size:13px;color:var(--muted)}
-.footer-links{display:flex;gap:20px}
-.footer-link{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .15s;cursor:pointer}
-.footer-link:hover{color:var(--text)}
-
-/* ── SEPARATOR ── */
-.sep{max-width:900px;margin:0 auto;padding:0 48px}
-.sep hr{border:none;border-top:1px solid var(--border)}
-
-/* animations */
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.hero{animation:fadeUp .5s ease both}
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
 </head>
 <body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  @keyframes scPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+</style>
+</helmet>
+<div style="font-family:'Geist',system-ui,sans-serif;color:#dfe8e2;line-height:1.6;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;background:#0a0c0b;background-image:linear-gradient(rgba(84,201,138,0.045) 1px,transparent 1px),linear-gradient(90deg,rgba(84,201,138,0.045) 1px,transparent 1px);background-size:40px 40px">
 
-<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Support Copilot portfolio page — multi-agent AI ticket resolution system built with LangGraph, RAG, and Ollama</h2>
-
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-eyebrow">
-    <div class="pill pill-accent"><i class="ti ti-robot" aria-hidden="true"></i> Hero project</div>
-    <div class="pill pill-teal"><i class="ti ti-sparkles" aria-hidden="true"></i> Agentic AI</div>
-    <div class="pill pill-amber"><i class="ti ti-currency-dollar-off" aria-hidden="true"></i> 100% free stack</div>
-  </div>
-  <h1>Autonomous Support<br><span>Resolution Copilot</span></h1>
-  <p class="sub">A 6-agent AI pipeline that triages, retrieves, drafts, escalates, and follows up on customer support tickets — fully grounded in your knowledge base.</p>
-  <div class="hero-actions">
-    <button class="btn btn-primary" onclick="document.getElementById('pipeline-section').scrollIntoView({behavior:'smooth'})">
-      <i class="ti ti-player-play" aria-hidden="true"></i> See how it works
-    </button>
-    <button class="btn btn-ghost" onclick="document.getElementById('demo-section').scrollIntoView({behavior:'smooth'})">
-      <i class="ti ti-eye" aria-hidden="true"></i> View demo
-    </button>
-  </div>
-</div>
-
-<!-- STATS BAR -->
-<div class="stats-bar">
-  <div class="stat-item">
-    <div class="stat-val">6<span> agents</span></div>
-    <div class="stat-label">Specialized pipeline</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-val"><span>$</span>0.00</div>
-    <div class="stat-label">Cost per ticket</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-val">91<span>%</span></div>
-    <div class="stat-label">Faithfulness score</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-val">40<span>%↓</span></div>
-    <div class="stat-label">Resolution time</div>
-  </div>
-</div>
-
-<!-- PIPELINE -->
-<div class="section" id="pipeline-section">
-  <div class="section-label">Architecture</div>
-  <div class="section-title">6-agent pipeline</div>
-  <p class="section-sub">Each agent has one job. Click any agent to see what it does under the hood.</p>
-
-  <div class="pipeline" id="pipeline">
-  </div>
-</div>
-
-<div class="sep"><hr></div>
-
-<!-- DEMO -->
-<div class="section" id="demo-section">
-  <div class="section-label">Live demo</div>
-  <div class="section-title">See an angry ticket resolved</div>
-  <p class="section-sub">A real example — billing complaint, high urgency, angry sentiment.</p>
-
-  <div class="demo-panel">
-    <div class="demo-header">
-      <div class="demo-dots">
-        <div class="dot" style="background:#f87171"></div>
-        <div class="dot" style="background:#f59e0b"></div>
-        <div class="dot" style="background:#4ade80"></div>
-      </div>
-      <div class="demo-title-bar">support-copilot · localhost:3000</div>
+  <!-- NAV -->
+  <nav style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:15px 40px;background:rgba(10,12,11,0.82);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.07)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.84rem;color:#54c98a">$ support-copilot<span style="animation:scPulse 1.1s infinite">_</span></div>
+    <div style="display:flex;align-items:center;gap:24px;font-size:.85rem">
+      <a href="#pipeline" style="color:#7e8b83;text-decoration:none">Pipeline</a>
+      <a href="#demo" style="color:#7e8b83;text-decoration:none">Demo</a>
+      <a href="#eval" style="color:#7e8b83;text-decoration:none">Evaluation</a>
+      <a href="https://github.com/aasthav1811/Autonomous-Support-Resolution-Copilot" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:.76rem;color:#0a0c0b;background:#54c98a;text-decoration:none;font-weight:600;padding:8px 15px;border-radius:6px">GitHub ↗</a>
     </div>
-    <div class="demo-body">
-      <div class="demo-ticket">
-        <div class="ticket-meta">
-          <span class="demo-badge badge-cat">billing</span>
-          <span class="demo-badge badge-urg">critical</span>
-          <span class="demo-badge badge-sent">angry</span>
-          <span class="demo-badge" style="background:#2dd4bf15;color:#2dd4bf;border:1px solid #2dd4bf30">→ Finance Team</span>
+  </nav>
+
+  <!-- HERO -->
+  <header style="max-width:1100px;margin:0 auto;padding:74px 40px 36px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#54c98a;margin-bottom:22px">Agentic AI · LangGraph · RAG · 100% local</div>
+    <h1 style="font-size:clamp(2.5rem,5vw,4rem);font-weight:600;line-height:1.04;letter-spacing:-.035em;margin:0 0 20px;max-width:760px">A six-agent pipeline that resolves support tickets — grounded in your knowledge base.</h1>
+    <p style="font-size:1.1rem;color:#7e8b83;max-width:560px;margin:0 0 30px;text-wrap:pretty">Triage, route, retrieve, draft, escalate, follow up. Every reply is checked against the docs before a human ever sees it — running entirely on a local 7B model for $0 per ticket.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a href="#pipeline" style="background:#54c98a;color:#0a0c0b;font-weight:600;font-size:.92rem;padding:13px 24px;border-radius:8px;text-decoration:none">Inspect the agents →</a>
+      <a href="https://support-copilot-frontend-aastha-v-projects.vercel.app" target="_blank" rel="noopener" style="border:1px solid rgba(255,255,255,0.14);color:#dfe8e2;font-weight:500;font-size:.92rem;padding:13px 24px;border-radius:8px;text-decoration:none">Live frontend ↗</a>
+    </div>
+  </header>
+
+  <!-- STAT BAR -->
+  <div style="max-width:1100px;margin:0 auto;padding:0 40px">
+    <div style="border:1px solid rgba(255,255,255,0.09);border-radius:11px;display:grid;grid-template-columns:repeat(4,1fr);background:#0f1311;overflow:hidden">
+      <div style="padding:20px 22px;border-right:1px solid rgba(255,255,255,0.06)"><div style="font-size:1.6rem;font-weight:600;letter-spacing:-.02em;font-family:'JetBrains Mono',monospace">6</div><div style="font-size:.74rem;color:#7e8b83;margin-top:3px">specialized agents</div></div>
+      <div style="padding:20px 22px;border-right:1px solid rgba(255,255,255,0.06)"><div style="font-size:1.6rem;font-weight:600;letter-spacing:-.02em;font-family:'JetBrains Mono',monospace;color:#54c98a">$0.00</div><div style="font-size:.74rem;color:#7e8b83;margin-top:3px">cost per ticket</div></div>
+      <div style="padding:20px 22px;border-right:1px solid rgba(255,255,255,0.06)"><div style="font-size:1.6rem;font-weight:600;letter-spacing:-.02em;font-family:'JetBrains Mono',monospace;color:#54c98a">84%</div><div style="font-size:.74rem;color:#7e8b83;margin-top:3px">responses grounded</div></div>
+      <div style="padding:20px 22px"><div style="font-size:1.6rem;font-weight:600;letter-spacing:-.02em;font-family:'JetBrains Mono',monospace;color:#54c98a">88%</div><div style="font-size:.74rem;color:#7e8b83;margin-top:3px">routing accuracy</div></div>
+    </div>
+  </div>
+
+  <!-- PIPELINE -->
+  <section id="pipeline" style="max-width:1100px;margin:0 auto;padding:74px 40px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#54c98a;letter-spacing:.1em;margin-bottom:8px">// architecture</div>
+    <h2 style="font-size:clamp(1.7rem,3vw,2.4rem);font-weight:600;letter-spacing:-.03em;margin:0 0 8px">Six agents. One typed state.</h2>
+    <p style="color:#7e8b83;max-width:560px;margin:0 0 34px">A LangGraph StateGraph passes one shared state down the chain. Click any node to see what it does — note only two of the six call the LLM.</p>
+    <div style="display:flex;flex-direction:column;gap:0">
+      <div onClick="{{ toggle0 }}" style="{{ ns0 }}">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#54c98a;min-width:22px;padding-top:2px">01</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:3px;flex-wrap:wrap"><span style="font-weight:600;font-size:.95rem">Intake agent</span><span style="font-family:'JetBrains Mono',monospace;font-size:.64rem;color:#9b8cf0;border:1px solid #9b8cf055;background:#9b8cf01f;border-radius:20px;padding:2px 9px">LLM</span></div>
+          <div style="font-size:.84rem;color:#7e8b83;line-height:1.5">Classifies every ticket by category, urgency and sentiment.</div>
+          <sc-if value="{{ open0 }}" hint-placeholder-val="{{ false }}"><div style="margin-top:11px;background:#0a0c0b;border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:12px 14px;font-size:.82rem;color:#aeb8b0;line-height:1.6">Outputs category / urgency / sentiment at temperature 0 for determinism. Includes fallback JSON parsing for local-model quirks.</div></sc-if>
         </div>
-        <div style="font-size:14px;font-weight:600;margin-bottom:6px;color:var(--text)">CHARGED TWICE — REFUND NOW</div>
-        <div class="ticket-body">"Your system charged my card THREE times for one subscription! This is fraud. I want all my money back TODAY or I'm disputing with my bank."</div>
+        <div style="font-family:'JetBrains Mono',monospace;color:#54c98a;font-size:.9rem;padding-top:2px">{{ sym0 }}</div>
       </div>
-
-      <div class="demo-response">
-        <div class="response-label"><i class="ti ti-robot" aria-hidden="true"></i> AI draft response</div>
-        <div class="response-text" id="demo-response-text">
-          I sincerely apologize for this experience — being charged multiple times is completely unacceptable and I understand your frustration. I've flagged your case as urgent.<br><br>
-          Per our billing policy, refunds are available within 30 days of purchase and process back to your original payment method within 5–10 business days. Please email <strong style="color:var(--accent2)">billing@company.com</strong> with your transaction IDs and we will resolve this immediately.<br><br>
-          I've escalated this to our Finance Team for priority handling.
+      <div style="width:1px;height:16px;background:rgba(255,255,255,0.12);margin-left:29px"></div>
+      <div onClick="{{ toggle1 }}" style="{{ ns1 }}">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#54c98a;min-width:22px;padding-top:2px">02</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:3px;flex-wrap:wrap"><span style="font-weight:600;font-size:.95rem">Routing agent</span><span style="font-family:'JetBrains Mono',monospace;font-size:.64rem;color:#7e8b83;border:1px solid #7e8b8355;background:#7e8b831f;border-radius:20px;padding:2px 9px">Rules</span></div>
+          <div style="font-size:.84rem;color:#7e8b83;line-height:1.5">Deterministically assigns the ticket to the right team.</div>
+          <sc-if value="{{ open1 }}" hint-placeholder-val="{{ false }}"><div style="margin-top:11px;background:#0a0c0b;border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:12px 14px;font-size:.82rem;color:#aeb8b0;line-height:1.6">Pure logic, zero LLM calls. Maps category → team (Finance / Engineering / Logistics / Account) from a config dict.</div></sc-if>
         </div>
-        <div class="demo-actions">
-          <button class="demo-btn approve" onclick="this.textContent='✓ Approved';this.style.color='#4ade80';this.style.borderColor='#4ade8040'">Approve &amp; send</button>
-          <button class="demo-btn" onclick="this.textContent='✓ Saved'">Edit</button>
-          <button class="demo-btn">Reject</button>
+        <div style="font-family:'JetBrains Mono',monospace;color:#54c98a;font-size:.9rem;padding-top:2px">{{ sym1 }}</div>
+      </div>
+      <div style="width:1px;height:16px;background:rgba(255,255,255,0.12);margin-left:29px"></div>
+      <div onClick="{{ toggle2 }}" style="{{ ns2 }}">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#54c98a;min-width:22px;padding-top:2px">03</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:3px;flex-wrap:wrap"><span style="font-weight:600;font-size:.95rem">Retrieval agent</span><span style="font-family:'JetBrains Mono',monospace;font-size:.64rem;color:#e0a44a;border:1px solid #e0a44a55;background:#e0a44a1f;border-radius:20px;padding:2px 9px">RAG</span></div>
+          <div style="font-size:.84rem;color:#7e8b83;line-height:1.5">Pulls the top-3 knowledge-base chunks, filtered by category.</div>
+          <sc-if value="{{ open2 }}" hint-placeholder-val="{{ false }}"><div style="margin-top:11px;background:#0a0c0b;border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:12px 14px;font-size:.82rem;color:#aeb8b0;line-height:1.6">all-MiniLM-L6-v2 embeddings over ChromaDB. Category-aware filtering lifted hit-rate from 78% → 92%. No API calls.</div></sc-if>
         </div>
+        <div style="font-family:'JetBrains Mono',monospace;color:#54c98a;font-size:.9rem;padding-top:2px">{{ sym2 }}</div>
       </div>
-
-      <div style="margin-top:16px">
-        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Agent trace</div>
-        <div class="trace-row" id="trace-row"></div>
+      <div style="width:1px;height:16px;background:rgba(255,255,255,0.12);margin-left:29px"></div>
+      <div onClick="{{ toggle3 }}" style="{{ ns3 }}">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#54c98a;min-width:22px;padding-top:2px">04</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:3px;flex-wrap:wrap"><span style="font-weight:600;font-size:.95rem">Drafting agent</span><span style="font-family:'JetBrains Mono',monospace;font-size:.64rem;color:#9b8cf0;border:1px solid #9b8cf055;background:#9b8cf01f;border-radius:20px;padding:2px 9px">LLM</span></div>
+          <div style="font-size:.84rem;color:#7e8b83;line-height:1.5">Writes an empathetic reply grounded strictly in retrieved chunks.</div>
+          <sc-if value="{{ open3 }}" hint-placeholder-val="{{ false }}"><div style="margin-top:11px;background:#0a0c0b;border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:12px 14px;font-size:.82rem;color:#aeb8b0;line-height:1.6">Temperature 0.3 for slight variation. The prompt forbids inventing information and leads with an apology on angry sentiment.</div></sc-if>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;color:#54c98a;font-size:.9rem;padding-top:2px">{{ sym3 }}</div>
       </div>
-
-      <div style="margin-top:14px;background:#4ade8012;border:1px solid #4ade8025;border-radius:10px;padding:12px 16px;font-size:13px;color:#4ade80">
-        <i class="ti ti-shield-check" aria-hidden="true"></i> Hallucination check passed — response grounded in knowledge base
+      <div style="width:1px;height:16px;background:rgba(255,255,255,0.12);margin-left:29px"></div>
+      <div onClick="{{ toggle4 }}" style="{{ ns4 }}">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#54c98a;min-width:22px;padding-top:2px">05</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:3px;flex-wrap:wrap"><span style="font-weight:600;font-size:.95rem">Escalation agent</span><span style="font-family:'JetBrains Mono',monospace;font-size:.64rem;color:#7e8b83;border:1px solid #7e8b8355;background:#7e8b831f;border-radius:20px;padding:2px 9px">Rules</span></div>
+          <div style="font-size:.84rem;color:#7e8b83;line-height:1.5">Flags tickets that need a human.</div>
+          <sc-if value="{{ open4 }}" hint-placeholder-val="{{ false }}"><div style="margin-top:11px;background:#0a0c0b;border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:12px 14px;font-size:.82rem;color:#aeb8b0;line-height:1.6">Three triggers: urgency in {high, critical}, sentiment == angry, or zero KB matches. Saves the reason for the reviewer.</div></sc-if>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;color:#54c98a;font-size:.9rem;padding-top:2px">{{ sym4 }}</div>
+      </div>
+      <div style="width:1px;height:16px;background:rgba(255,255,255,0.12);margin-left:29px"></div>
+      <div onClick="{{ toggle5 }}" style="{{ ns5 }}">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#54c98a;min-width:22px;padding-top:2px">06</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:3px;flex-wrap:wrap"><span style="font-weight:600;font-size:.95rem">Follow-up agent</span><span style="font-family:'JetBrains Mono',monospace;font-size:.64rem;color:#7e8b83;border:1px solid #7e8b8355;background:#7e8b831f;border-radius:20px;padding:2px 9px">Rules</span></div>
+          <div style="font-size:.84rem;color:#7e8b83;line-height:1.5">Schedules a follow-up on any escalated or angry ticket.</div>
+          <sc-if value="{{ open5 }}" hint-placeholder-val="{{ false }}"><div style="margin-top:11px;background:#0a0c0b;border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:12px 14px;font-size:.82rem;color:#aeb8b0;line-height:1.6">Sets followup_required = true. In production this fires a Celery task or Slack alert after 24h.</div></sc-if>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;color:#54c98a;font-size:.9rem;padding-top:2px">{{ sym5 }}</div>
       </div>
     </div>
-  </div>
-</div>
+  </section>
 
-<div class="sep"><hr></div>
+  <!-- DEMO -->
+  <section id="demo" style="border-top:1px solid rgba(255,255,255,0.06);background:#0c0f0d">
+    <div style="max-width:1100px;margin:0 auto;padding:74px 40px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#54c98a;letter-spacing:.1em;margin-bottom:8px">// live demo</div>
+      <h2 style="font-size:clamp(1.7rem,3vw,2.4rem);font-weight:600;letter-spacing:-.03em;margin:0 0 8px">An angry billing ticket, resolved</h2>
+      <p style="color:#7e8b83;max-width:520px;margin:0 0 28px">A real example from the eval set — billing category, critical urgency, angry sentiment.</p>
 
-<!-- STACK -->
-<div class="section">
-  <div class="section-label">Tech stack</div>
-  <div class="section-title">Entirely free, entirely local</div>
-  <p class="section-sub">No API keys. No cloud bills. Runs on your laptop.</p>
+      <div style="background:#0f1311;border:1px solid rgba(255,255,255,0.09);border-radius:13px;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:9px;padding:13px 18px;border-bottom:1px solid rgba(255,255,255,0.07);background:#121714">
+          <span style="width:10px;height:10px;border-radius:50%;background:#e06b6b"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#e0a44a"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#54c98a"></span>
+          <span style="flex:1;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#7e8b83">support-copilot · localhost:8501</span>
+        </div>
+        <div style="padding:22px">
+          <div style="background:#0a0c0b;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px;margin-bottom:14px">
+            <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:11px">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#9b8cf0;background:rgba(155,140,240,0.12);border:1px solid rgba(155,140,240,0.3);border-radius:20px;padding:3px 10px">billing</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#e06b6b;background:rgba(224,107,107,0.12);border:1px solid rgba(224,107,107,0.3);border-radius:20px;padding:3px 10px">critical</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#e0a44a;background:rgba(224,164,74,0.12);border:1px solid rgba(224,164,74,0.3);border-radius:20px;padding:3px 10px">angry</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#54c98a;background:rgba(84,201,138,0.12);border:1px solid rgba(84,201,138,0.3);border-radius:20px;padding:3px 10px">→ Finance</span>
+            </div>
+            <div style="font-weight:600;font-size:.95rem;margin-bottom:5px">CHARGED TWICE — REFUND NOW</div>
+            <div style="font-size:.85rem;color:#7e8b83;line-height:1.6">"Your system charged my card THREE times for one subscription! This is fraud. I want all my money back TODAY or I'm disputing with my bank."</div>
+          </div>
 
-  <div class="stack-grid">
-    <div class="stack-card">
-      <div class="stack-icon" style="background:#7c6dfa18"><i class="ti ti-cpu" style="color:var(--accent2);font-size:20px" aria-hidden="true"></i></div>
-      <div class="stack-name">Ollama + Llama 3.2</div>
-      <div class="stack-role">Local LLM inference</div>
-      <div class="stack-free">Free · offline</div>
-    </div>
-    <div class="stack-card">
-      <div class="stack-icon" style="background:#2dd4bf18"><i class="ti ti-topology-star" style="color:var(--teal);font-size:20px" aria-hidden="true"></i></div>
-      <div class="stack-name">LangGraph</div>
-      <div class="stack-role">Multi-agent orchestration</div>
-      <div class="stack-free">Open source</div>
-    </div>
-    <div class="stack-card">
-      <div class="stack-icon" style="background:#f59e0b18"><i class="ti ti-database" style="color:var(--amber);font-size:20px" aria-hidden="true"></i></div>
-      <div class="stack-name">ChromaDB</div>
-      <div class="stack-role">Vector store for RAG</div>
-      <div class="stack-free">Free · local</div>
-    </div>
-    <div class="stack-card">
-      <div class="stack-icon" style="background:#4ade8018"><i class="ti ti-vector" style="color:var(--green);font-size:20px" aria-hidden="true"></i></div>
-      <div class="stack-name">all-MiniLM-L6-v2</div>
-      <div class="stack-role">Local embeddings</div>
-      <div class="stack-free">Free · offline</div>
-    </div>
-    <div class="stack-card">
-      <div class="stack-icon" style="background:#7c6dfa18"><i class="ti ti-api" style="color:var(--accent2);font-size:20px" aria-hidden="true"></i></div>
-      <div class="stack-name">FastAPI</div>
-      <div class="stack-role">Python REST backend</div>
-      <div class="stack-free">Open source</div>
-    </div>
-    <div class="stack-card">
-      <div class="stack-icon" style="background:#2dd4bf18"><i class="ti ti-brand-nextjs" style="color:var(--teal);font-size:20px" aria-hidden="true"></i></div>
-      <div class="stack-name">Next.js + Tailwind</div>
-      <div class="stack-role">Frontend UI</div>
-      <div class="stack-free">Open source</div>
-    </div>
-  </div>
-</div>
+          <div style="background:#0a0c0b;border:1px solid rgba(84,201,138,0.22);border-radius:10px;padding:16px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.66rem;color:#54c98a;text-transform:uppercase;letter-spacing:.08em;margin-bottom:9px">▌ AI draft response</div>
+            <div style="font-size:.85rem;color:#aeb8b0;line-height:1.7">
+              I'm sorry for this experience — being charged multiple times is unacceptable, and I've flagged your case as urgent.<br><br>
+              Per our billing policy, refunds process to your original payment method within 5–10 business days. Please email <strong style="color:#54c98a"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dcbeb5b0b0b5b2bb9cbfb3b1acbdb2a5f2bfb3b1">[email&#160;protected]</a></strong> with your transaction IDs and we'll resolve this right away.<br><br>
+              I've escalated this to our Finance team for priority handling.
+            </div>
+            <div style="display:flex;gap:8px;margin-top:13px">
+              <button onclick="{{ approve }}" style="font-family:'Geist',sans-serif;font-size:.78rem;padding:7px 15px;border-radius:7px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:{{ approveColor }};cursor:pointer">{{ approveLabel }}</button>
+              <button style="font-family:'Geist',sans-serif;font-size:.78rem;padding:7px 15px;border-radius:7px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:#7e8b83;cursor:pointer">Edit</button>
+              <button style="font-family:'Geist',sans-serif;font-size:.78rem;padding:7px 15px;border-radius:7px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:#7e8b83;cursor:pointer">Reject</button>
+            </div>
+          </div>
 
-<div class="sep"><hr></div>
+          <div style="margin-top:16px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.64rem;color:#7e8b83;text-transform:uppercase;letter-spacing:.08em;margin-bottom:9px">Agent trace</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">{{ trace }}</div>
+          </div>
 
-<!-- FEATURES -->
-<div class="section">
-  <div class="section-label">Capabilities</div>
-  <div class="section-title">What makes this portfolio-worthy</div>
-  <p class="section-sub">Skills that enterprise AI teams actually hire for.</p>
-
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feat-icon"><i class="ti ti-chart-arrows-vertical" style="color:var(--accent2);font-size:24px" aria-hidden="true"></i></div>
-      <div class="feat-title">Multi-agent orchestration</div>
-      <div class="feat-desc">LangGraph StateGraph with 6 nodes sharing typed state. Each agent is independently testable and swappable.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon"><i class="ti ti-books" style="color:var(--teal);font-size:24px" aria-hidden="true"></i></div>
-      <div class="feat-title">Retrieval-augmented generation</div>
-      <div class="feat-desc">Category-filtered vector retrieval over a local knowledge base. Hit-rate improved from 78% to 92% with filtering.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon"><i class="ti ti-shield-check" style="color:var(--green);font-size:24px" aria-hidden="true"></i></div>
-      <div class="feat-title">Hallucination detection</div>
-      <div class="feat-desc">LLM-as-judge evaluates every draft against retrieved context before it reaches a human. Catches ~10% of cases.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon"><i class="ti ti-user-check" style="color:var(--amber);font-size:24px" aria-hidden="true"></i></div>
-      <div class="feat-title">Human-in-the-loop</div>
-      <div class="feat-desc">No response auto-sends. Every draft goes through approve / edit / reject. Production-safe by design.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon"><i class="ti ti-route" style="color:var(--accent2);font-size:24px" aria-hidden="true"></i></div>
-      <div class="feat-title">Smart escalation logic</div>
-      <div class="feat-desc">Rule-based escalation for angry sentiment, critical urgency, or zero KB matches — no LLM tokens wasted.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon"><i class="ti ti-activity" style="color:var(--teal);font-size:24px" aria-hidden="true"></i></div>
-      <div class="feat-title">Full observability</div>
-      <div class="feat-desc">Agent trace visible on every ticket. LangSmith integration for production debugging and latency analysis.</div>
-    </div>
-  </div>
-</div>
-
-<!-- RECORDED DEMO SECTION -->
-<div class="section" id="recorded-demo-section" style="background:linear-gradient(135deg,rgba(124,109,250,0.06),rgba(45,212,191,0.04));border-top:1px solid var(--border)">
-  <div class="section-label">Recorded Demo</div>
-  <div class="section-title">Watch it in action</div>
-  <p class="section-sub" style="max-width:560px">The frontend is live on Vercel — but the backend runs on Ollama locally and can't be deployed to a free tier. Watch the full walkthrough to see the real agent in action.</p>
-  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:4px">
-    <a href="https://support-copilot-frontend-aastha-v-projects.vercel.app" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;font-weight:600;font-size:.88rem;padding:12px 24px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Space Grotesk',sans-serif" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
-      <i class="ti ti-browser" aria-hidden="true"></i> Live Frontend ↗
-    </a>
-    <a href="#" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:rgba(248,113,113,0.12);color:var(--red);border:1px solid rgba(248,113,113,0.25);font-weight:600;font-size:.88rem;padding:12px 24px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Space Grotesk',sans-serif" onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">
-      <i class="ti ti-player-play" aria-hidden="true"></i> Watch Recorded Demo ▶
-    </a>
-    <div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:8px;font-family:'Space Grotesk',sans-serif">
-      <i class="ti ti-info-circle" style="color:var(--amber)" aria-hidden="true"></i>
-      Backend runs on Ollama — not cloud-deployable on free tier
-    </div>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<div class="footer-bar">
-  <div class="footer-left">Built with LangGraph · ChromaDB · Ollama · Next.js</div>
-  <div class="footer-links">
-    <span class="footer-link" onclick="sendPrompt('Can you show me the full project code?')"><i class="ti ti-brand-github" aria-hidden="true"></i> Source</span>
-    <span class="footer-link" onclick="sendPrompt('Walk me through the agent architecture in detail')"><i class="ti ti-book" aria-hidden="true"></i> Docs</span>
-    <span class="footer-link" onclick="sendPrompt('Give me the demo script for recording a video of this project')"><i class="ti ti-video" aria-hidden="true"></i> Demo script</span>
-  </div>
-</div>
-
-<script>
-const agents=[
-  {icon:'ti-filter',color:'#7c6dfa18',iconColor:'var(--accent2)',name:'Intake agent',tag:'LLM',tagClass:'tag-llm',desc:'Classifies every ticket by category, urgency level, and customer sentiment using Llama 3.2.',detail:'Outputs: <code>category</code>, <code>urgency</code>, <code>sentiment</code>. Uses temperature=0 for deterministic classification. Includes fallback JSON parsing for local model quirks.'},
-  {icon:'ti-arrows-split',color:'#2dd4bf18',iconColor:'var(--teal)',name:'Routing agent',tag:'Rules',tagClass:'tag-rules',desc:'Deterministically assigns the ticket to the correct team — Finance, Engineering, Logistics, or Account Management.',detail:'Pure logic, zero LLM calls. Maps <code>category → team</code> from a config dict. Cheap, fast, 100% predictable.'},
-  {icon:'ti-database-search',color:'#f59e0b18',iconColor:'var(--amber)',name:'Retrieval agent',tag:'RAG',tagClass:'tag-rag',desc:'Searches ChromaDB for the top 3 knowledge base chunks most relevant to the ticket, filtered by category.',detail:'Uses <code>all-MiniLM-L6-v2</code> for local embeddings. Category-aware filtering boosted hit-rate from 78% → 92%. No API calls.'},
-  {icon:'ti-pencil',color:'#4ade8018',iconColor:'var(--green)',name:'Drafting agent',tag:'LLM',tagClass:'tag-llm',desc:'Writes an empathetic, accurate reply grounded strictly in the retrieved knowledge base chunks.',detail:'Uses temperature=0.3 for slight variation. Prompt explicitly forbids inventing information. Detects angry sentiment and leads with apology.'},
-  {icon:'ti-alert-triangle',color:'#f8717118',iconColor:'var(--red)',name:'Escalation agent',tag:'Rules',tagClass:'tag-rules',desc:'Flags tickets that need a human — critical urgency, angry customers, or zero KB match.',detail:'Three escalation triggers: <code>urgency in [high, critical]</code>, <code>sentiment == angry</code>, or <code>len(docs) == 0</code>. Saves escalation reason for the human reviewer.'},
-  {icon:'ti-clock-check',color:'#7c6dfa18',iconColor:'var(--accent2)',name:'Follow-up agent',tag:'Rules',tagClass:'tag-rules',desc:'Schedules an automatic follow-up for any escalated or angry-sentiment ticket to ensure resolution.',detail:'Sets <code>followup_required = True</code> when escalated. In production this triggers a Celery task or Slack alert after 24h.'},
-];
-
-const pipeline=document.getElementById('pipeline');
-agents.forEach((a,i)=>{
-  const wrap=document.createElement('div');
-  wrap.innerHTML=`
-    <div class="pipeline-agent" id="agent-${i}" onclick="toggleAgent(${i})">
-      <div class="agent-index mono">0${i+1}</div>
-      <div class="agent-icon" style="background:${a.color}"><i class="ti ${a.icon}" style="color:${a.iconColor};font-size:18px" aria-hidden="true"></i></div>
-      <div class="agent-body">
-        <div class="agent-name">${a.name}</div>
-        <div class="agent-desc">${a.desc}</div>
-        <div class="agent-tag ${a.tagClass}"><i class="ti ti-${a.tag==='LLM'?'cpu':a.tag==='RAG'?'database':'settings'}" aria-hidden="true"></i>${a.tag}</div>
-        <div class="agent-detail" id="detail-${i}">
-          <div class="detail-box">${a.detail}</div>
+          <div style="margin-top:14px;background:rgba(84,201,138,0.08);border:1px solid rgba(84,201,138,0.22);border-radius:9px;padding:11px 15px;font-size:.82rem;color:#54c98a;font-family:'JetBrains Mono',monospace">✓ groundedness check passed — response supported by retrieved context</div>
         </div>
       </div>
     </div>
-    ${i<agents.length-1?'<div class="connector"></div>':''}
-  `;
-  pipeline.appendChild(wrap);
-});
+  </section>
 
-function toggleAgent(i){
-  const detail=document.getElementById('detail-'+i);
-  const agent=document.getElementById('agent-'+i);
-  const isOpen=detail.classList.contains('open');
-  document.querySelectorAll('.agent-detail').forEach(d=>d.classList.remove('open'));
-  document.querySelectorAll('.pipeline-agent').forEach(a=>a.classList.remove('active'));
-  if(!isOpen){detail.classList.add('open');agent.classList.add('active');}
-}
+  <!-- EVALUATION -->
+  <section id="eval" style="max-width:1100px;margin:0 auto;padding:74px 40px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#54c98a;letter-spacing:.1em;margin-bottom:8px">// evaluation</div>
+    <h2 style="font-size:clamp(1.7rem,3vw,2.4rem);font-weight:600;letter-spacing:-.03em;margin:0 0 8px">Scored on 50 labelled tickets</h2>
+    <p style="color:#7e8b83;max-width:560px;margin:0 0 34px;text-wrap:pretty">A held-out set across five categories — billing, technical, account, shipping, general — run end-to-end through Qwen2.5-Coder 7B on Ollama. Numbers below are computed from the eval log in the repo.</p>
+    <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:6px"><span>Category routing</span><span style="font-family:'JetBrains Mono',monospace;color:#54c98a">88% · 44/50</span></div>
+          <div style="height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden"><div style="height:100%;width:88%;background:#54c98a;border-radius:3px"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:6px"><span>Groundedness (faithfulness)</span><span style="font-family:'JetBrains Mono',monospace;color:#54c98a">84% · 42/50</span></div>
+          <div style="height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden"><div style="height:100%;width:84%;background:#54c98a;border-radius:3px"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:6px"><span>Escalation decision</span><span style="font-family:'JetBrains Mono',monospace;color:#54c98a">80% · 40/50</span></div>
+          <div style="height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden"><div style="height:100%;width:80%;background:#54c98a;border-radius:3px"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:6px"><span>Sentiment classification</span><span style="font-family:'JetBrains Mono',monospace;color:#e0a44a">78% · 39/50</span></div>
+          <div style="height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden"><div style="height:100%;width:78%;background:#e0a44a;border-radius:3px"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:6px"><span>Urgency (exact match)</span><span style="font-family:'JetBrains Mono',monospace;color:#7e8b83">56% · often off-by-one</span></div>
+          <div style="height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden"><div style="height:100%;width:56%;background:#7e8b83;border-radius:3px"></div></div>
+        </div>
+      </div>
+      <div style="background:#0f1311;border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:22px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.64rem;color:#7e8b83;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px">Run characteristics</div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><span style="font-size:.86rem;color:#aeb8b0">Avg latency / ticket</span><span style="font-family:'JetBrains Mono',monospace;font-size:.86rem;color:#dfe8e2">~10.4 s</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><span style="font-size:.86rem;color:#aeb8b0">RAG docs retrieved</span><span style="font-family:'JetBrains Mono',monospace;font-size:.86rem;color:#dfe8e2">top-3 / ticket</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><span style="font-size:.86rem;color:#aeb8b0">Hallucinations caught</span><span style="font-family:'JetBrains Mono',monospace;font-size:.86rem;color:#54c98a">8 / 50 flagged</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)"><span style="font-size:.86rem;color:#aeb8b0">Categories covered</span><span style="font-family:'JetBrains Mono',monospace;font-size:.86rem;color:#dfe8e2">5</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0"><span style="font-size:.86rem;color:#aeb8b0">External API cost</span><span style="font-family:'JetBrains Mono',monospace;font-size:.86rem;color:#54c98a">$0.00</span></div>
+        <div style="margin-top:16px;background:rgba(224,164,74,0.08);border:1px solid rgba(224,164,74,0.2);border-radius:8px;padding:11px 13px;font-size:.78rem;color:#c9a979;line-height:1.5"><strong style="color:#e0a44a">Honest read:</strong> urgency is the weak spot — the model usually lands one level off (critical↔high). Routing and groundedness are the strengths.</div>
+      </div>
+    </div>
+  </section>
 
-const traces=['IntakeAgent','RoutingAgent','RetrievalAgent','DraftingAgent','EscalationAgent','FollowUpAgent'];
-const traceRow=document.getElementById('trace-row');
-traces.forEach((t,i)=>{
-  const chip=document.createElement('div');
-  chip.className='trace-chip';
-  chip.textContent=t;
-  traceRow.appendChild(chip);
-  setTimeout(()=>chip.classList.add('done'),400+i*300);
-  if(i<traces.length-1){
-    const arr=document.createElement('div');
-    arr.style.cssText='font-size:11px;color:#444;display:flex;align-items:center';
-    arr.textContent='→';
-    traceRow.appendChild(arr);
+  <!-- STACK -->
+  <section style="border-top:1px solid rgba(255,255,255,0.06);background:#0c0f0d">
+    <div style="max-width:1100px;margin:0 auto;padding:70px 40px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#54c98a;letter-spacing:.1em;margin-bottom:8px">// stack</div>
+      <h2 style="font-size:clamp(1.7rem,3vw,2.4rem);font-weight:600;letter-spacing:-.03em;margin:0 0 6px">Entirely free, entirely local</h2>
+      <p style="color:#7e8b83;margin:0 0 30px">No API keys, no cloud bills — it runs on a laptop.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:13px">
+        <div style="background:#0f1311;border:1px solid rgba(255,255,255,0.08);border-radius:11px;padding:18px"><div style="font-family:'JetBrains Mono',monospace;font-size:.86rem;color:#54c98a;margin-bottom:5px">Ollama · Qwen2.5-Coder 7B</div><div style="font-size:.8rem;color:#7e8b83">Local LLM inference · intake + drafting only</div></div>
+        <div style="background:#0f1311;border:1px solid rgba(255,255,255,0.08);border-radius:11px;padding:18px"><div style="font-family:'JetBrains Mono',monospace;font-size:.86rem;color:#54c98a;margin-bottom:5px">LangGraph</div><div style="font-size:.8rem;color:#7e8b83">6-node StateGraph orchestration</div></div>
+        <div style="background:#0f1311;border:1px solid rgba(255,255,255,0.08);border-radius:11px;padding:18px"><div style="font-family:'JetBrains Mono',monospace;font-size:.86rem;color:#54c98a;margin-bottom:5px">ChromaDB</div><div style="font-size:.8rem;color:#7e8b83">Local vector store for RAG</div></div>
+        <div style="background:#0f1311;border:1px solid rgba(255,255,255,0.08);border-radius:11px;padding:18px"><div style="font-family:'JetBrains Mono',monospace;font-size:.86rem;color:#54c98a;margin-bottom:5px">all-MiniLM-L6-v2</div><div style="font-size:.8rem;color:#7e8b83">Local sentence embeddings</div></div>
+        <div style="background:#0f1311;border:1px solid rgba(255,255,255,0.08);border-radius:11px;padding:18px"><div style="font-family:'JetBrains Mono',monospace;font-size:.86rem;color:#54c98a;margin-bottom:5px">FastAPI</div><div style="font-size:.8rem;color:#7e8b83">REST backend · /process_ticket</div></div>
+        <div style="background:#0f1311;border:1px solid rgba(255,255,255,0.08);border-radius:11px;padding:18px"><div style="font-family:'JetBrains Mono',monospace;font-size:.86rem;color:#54c98a;margin-bottom:5px">Streamlit · Next.js</div><div style="font-size:.8rem;color:#7e8b83">Reviewer UI + deployed frontend</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="border-top:1px solid rgba(255,255,255,0.06)">
+    <div style="max-width:1100px;margin:0 auto;padding:38px 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#7e8b83">LangGraph · ChromaDB · Ollama · FastAPI</div>
+      <div style="display:flex;gap:20px">
+        <a href="https://github.com/aasthav1811/Autonomous-Support-Resolution-Copilot" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#7e8b83;text-decoration:none">Source ↗</a>
+        <a href="index.dc.html" style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#7e8b83;text-decoration:none">All projects</a>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { open: -1, done: 0, approved: false };
+
+  componentDidMount() {
+    this._iv = setInterval(() => {
+      this.setState(s => s.done >= 6 ? s : { done: s.done + 1 });
+    }, 420);
   }
-});
+  componentWillUnmount() { if (this._iv) clearInterval(this._iv); }
+
+  renderVals() {
+    const h = React.createElement;
+    const open = this.state.open;
+    const mkNs = (o) => "display:flex;align-items:flex-start;gap:16px;cursor:pointer;padding:16px 18px;border-radius:12px;transition:all .18s;border:1px solid " + (o ? "rgba(84,201,138,0.35)" : "rgba(255,255,255,0.07)") + ";background:" + (o ? "#121714" : "#0f1311") + ";";
+    const mkToggle = (i) => () => this.setState(s => ({ open: s.open === i ? -1 : i }));
+
+    const labels = ['Intake','Routing','Retrieval','Drafting','Escalation','Follow-up'];
+    const traceEls = [];
+    labels.forEach((t, i) => {
+      const lit = i < this.state.done;
+      traceEls.push(h('div', { key:'t'+i, style:{
+        fontFamily:"'JetBrains Mono',monospace", fontSize:'.7rem', padding:'4px 10px', borderRadius:'6px',
+        background: lit ? 'rgba(84,201,138,0.1)' : '#121714',
+        border:'1px solid ' + (lit ? 'rgba(84,201,138,0.35)' : 'rgba(255,255,255,0.08)'),
+        color: lit ? '#54c98a' : '#7e8b83', transition:'all .25s'
+      } }, t));
+      if (i < labels.length - 1) traceEls.push(h('span', { key:'ar'+i, style:{ color:'#3a463e', fontSize:'.7rem' } }, '→'));
+    });
+    const trace = h('div', { style:{ display:'flex', gap:'6px', flexWrap:'wrap', alignItems:'center' } }, traceEls);
+
+    return {
+      trace,
+      open0: open===0, open1: open===1, open2: open===2, open3: open===3, open4: open===4, open5: open===5,
+      ns0: mkNs(open===0), ns1: mkNs(open===1), ns2: mkNs(open===2), ns3: mkNs(open===3), ns4: mkNs(open===4), ns5: mkNs(open===5),
+      sym0: open===0?'−':'+', sym1: open===1?'−':'+', sym2: open===2?'−':'+', sym3: open===3?'−':'+', sym4: open===4?'−':'+', sym5: open===5?'−':'+',
+      toggle0: mkToggle(0), toggle1: mkToggle(1), toggle2: mkToggle(2), toggle3: mkToggle(3), toggle4: mkToggle(4), toggle5: mkToggle(5),
+      approve: () => this.setState({ approved: true }),
+      approveLabel: this.state.approved ? '✓ Approved & sent' : 'Approve & send',
+      approveColor: this.state.approved ? '#54c98a' : '#7e8b83',
+    };
+  }
+}
 </script>
 </body>
 </html>
