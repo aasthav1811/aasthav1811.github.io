@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Perceive AI — Multimodal Emotional Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#04080f;--s1:#070f1e;--s2:#0a1628;--s3:#0d1f38;
+  --t:#0ff5c4;--t2:rgba(15,245,196,.15);--t3:rgba(15,245,196,.07);
+  --am:#f9a825;--am2:rgba(249,168,37,.13);
+  --pu:#a78bfa;--pu2:rgba(167,139,250,.12);
+  --co:#ff6584;--co2:rgba(255,101,132,.12);
+  --gr:#34d399;--gr2:rgba(52,211,153,.12);
+  --re:#f87171;--re2:rgba(248,113,113,.12);
+  --tx:#c8ddf5;--mu:#4a6a8a;--mu2:#2a4a6a;
+  --b1:rgba(15,245,196,.12);--b2:rgba(15,245,196,.22);
+  --r4:4px;--r8:8px;--r12:12px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Geist',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;line-height:1.6}
+a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--s1)}
+::-webkit-scrollbar-thumb{background:var(--mu2);border-radius:3px}
+
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:58px;background:rgba(4,8,15,.8);backdrop-filter:blur(16px);border-bottom:1px solid var(--b1)}
+.nav-logo{font-family:'Geist Mono',monospace;font-size:13px;color:var(--t);letter-spacing:.05em;display:flex;align-items:center;gap:8px}
+.nav-logo-dot{width:6px;height:6px;border-radius:50%;background:var(--t);animation:dotPulse 2s ease-in-out infinite}
+@keyframes dotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.nav-links{display:flex;gap:2.5rem}
+.nav-links a{font-family:'Geist Mono',monospace;font-size:12px;color:var(--mu);letter-spacing:.06em;transition:color .2s}
+.nav-links a:hover{color:var(--tx)}
+.nav-btn{font-family:'Geist Mono',monospace;font-size:11px;font-weight:600;color:var(--bg);background:var(--t);border:none;padding:8px 18px;border-radius:var(--r4);cursor:pointer;letter-spacing:.08em;transition:opacity .2s,transform .2s}
+.nav-btn:hover{opacity:.85;transform:translateY(-1px)}
+
+/* HERO */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:7rem 2rem 4rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;font-family:'Geist Mono',monospace;font-size:10px;color:var(--t);letter-spacing:.2em;text-transform:uppercase;margin-bottom:1.5rem;border:1px solid var(--b2);padding:5px 14px;border-radius:20px;background:var(--t3)}
+.hero-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--t);animation:dotPulse 1.5s ease-in-out infinite}
+h1.hero-title{font-size:clamp(2.8rem,6vw,5rem);font-weight:800;line-height:1.05;letter-spacing:-.03em;margin-bottom:1.5rem;background:linear-gradient(135deg,#e8f8ff 0%,#9dd8ff 35%,var(--t) 70%,#0dd5ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:1.05rem;color:var(--mu);max-width:520px;line-height:1.75;margin-bottom:2.5rem}
+.hero-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:3rem}
+.htag{font-family:'Geist Mono',monospace;font-size:10px;font-weight:500;padding:4px 12px;border-radius:3px;letter-spacing:.05em;border:1px solid}
+.htag-t{color:var(--t);background:var(--t3);border-color:var(--b2)}
+.htag-a{color:var(--am);background:var(--am2);border-color:rgba(249,168,37,.25)}
+.htag-p{color:var(--pu);background:var(--pu2);border-color:rgba(167,139,250,.25)}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn-p{background:var(--t);color:var(--bg);border:none;padding:13px 26px;border-radius:var(--r8);font-family:'Geist',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s}
+.btn-p:hover{opacity:.88;transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,245,196,.25)}
+.btn-g{background:transparent;color:var(--tx);border:1px solid var(--b2);padding:13px 26px;border-radius:var(--r8);font-family:'Geist',sans-serif;font-weight:500;font-size:13px;cursor:pointer;transition:all .2s}
+.btn-g:hover{border-color:var(--t);background:var(--t3);color:var(--t)}
+.hero-stat-row{display:flex;gap:2.5rem;flex-wrap:wrap;justify-content:center;margin-top:4rem;padding-top:3rem;border-top:1px solid var(--b1)}
+.hero-stat .n{font-family:'Geist Mono',monospace;font-size:2rem;font-weight:600;background:linear-gradient(135deg,var(--t),#0dd5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-stat .l{font-size:11px;color:var(--mu);letter-spacing:.08em;margin-top:2px}
+
+/* SECTIONS */
+.sec{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:5rem 2rem}
+.sec-eye{font-family:'Geist Mono',monospace;font-size:10px;color:var(--t);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.6rem;display:flex;align-items:center;gap:10px}
+.sec-eye::after{content:'';flex:1;height:1px;background:var(--b1)}
+.sec-title{font-size:clamp(1.5rem,3vw,2.1rem);font-weight:700;color:#e4f4ff;margin-bottom:.5rem;letter-spacing:-.01em}
+.sec-sub{font-size:.9rem;color:var(--mu);max-width:520px;margin-bottom:2.5rem;line-height:1.7}
+
+/* OVERVIEW CARDS */
+.ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.ps-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r12);padding:1.75rem;position:relative;overflow:hidden}
+.ps-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.ps-card.problem::before{background:linear-gradient(90deg,var(--co),var(--am))}
+.ps-card.solution::before{background:linear-gradient(90deg,var(--t),var(--pu))}
+.ps-card.result::before{background:linear-gradient(90deg,var(--gr),var(--t))}
+.ps-card.approach::before{background:linear-gradient(90deg,var(--pu),var(--am))}
+.ps-label{font-family:'Geist Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.7rem}
+.ps-title{font-size:.95rem;font-weight:600;color:#e4f4ff;margin-bottom:.5rem}
+.ps-body{font-size:.85rem;color:var(--mu);line-height:1.7}
+.metric-row{display:flex;gap:2rem;margin-top:1rem}
+.metric .num{font-family:'Geist Mono',monospace;font-size:1.6rem;font-weight:600}
+.metric .lbl{font-size:10px;color:var(--mu);letter-spacing:.06em;margin-top:2px}
+.metric .num.t{color:var(--t)}.metric .num.a{color:var(--am)}.metric .num.p{color:var(--pu)}
+
+/* PIPELINE */
+.pipe-wrap{display:flex;align-items:center;overflow-x:auto;gap:0;padding:1rem 0 1.5rem}
+.pipe-step{flex:1;min-width:130px;display:flex;align-items:center}
+.pipe-box{flex:1;background:var(--s2);border:1px solid var(--b1);border-radius:var(--r8);padding:1.1rem .75rem;text-align:center;position:relative;transition:border-color .3s,transform .2s;cursor:default}
+.pipe-box:hover{border-color:var(--t);transform:translateY(-3px)}
+.pipe-box::before{content:attr(data-n);position:absolute;top:-11px;left:50%;transform:translateX(-50%);font-family:'Geist Mono',monospace;font-size:9px;font-weight:600;color:var(--bg);padding:2px 9px;border-radius:10px;letter-spacing:.05em}
+.pipe-box.p1::before{background:var(--t)}.pipe-box.p2::before{background:var(--am)}.pipe-box.p3::before{background:var(--pu)}.pipe-box.p4::before{background:var(--co)}.pipe-box.p5::before{background:var(--gr)}
+.pipe-icon{font-size:1.4rem;margin-bottom:.4rem}
+.pipe-name{font-size:11px;font-weight:600;color:#e4f4ff;margin-bottom:.25rem}
+.pipe-desc{font-size:10px;color:var(--mu);line-height:1.4}
+.pipe-arrow{flex-shrink:0;width:28px;text-align:center;color:var(--mu2);font-size:16px;padding-top:16px}
+
+/* DEMO */
+.demo-wrap{background:linear-gradient(180deg,var(--bg) 0%,var(--s1) 40%,var(--bg) 100%);border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);padding:5rem 0;position:relative;z-index:1}
+.demo-inner{max-width:1080px;margin:0 auto;padding:0 2rem}
+.scenario-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center}
+.sc-btn{font-family:'Geist Mono',monospace;font-size:10px;font-weight:500;padding:6px 14px;border-radius:var(--r4);cursor:pointer;border:1px solid var(--b1);color:var(--mu);background:var(--s2);transition:all .2s;letter-spacing:.05em}
+.sc-btn.active{background:var(--t2);border-color:var(--b2);color:var(--t)}
+.live-pill{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-family:'Geist Mono',monospace;font-size:9px;color:var(--gr);background:var(--gr2);border:1px solid rgba(52,211,153,.25);padding:3px 10px;border-radius:3px;letter-spacing:.1em}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--gr);animation:dotPulse 1.5s ease-in-out infinite}
+.demo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem}
+.demo-panel{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r12);overflow:hidden;transition:border-color .3s}
+.demo-panel:hover{border-color:var(--b2)}
+.dp-head{padding:.85rem 1.1rem;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:7px}
+.dp-dot{width:7px;height:7px;border-radius:50%}
+.dp-title{font-family:'Geist Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.12em;text-transform:uppercase}
+.dp-badge{margin-left:auto;font-family:'Geist Mono',monospace;font-size:9px;padding:2px 7px;border-radius:2px;font-weight:500}
+.dp-body{padding:1.1rem}
+
+/* face panel */
+.face-wrap{position:relative;display:flex;justify-content:center;margin-bottom:1rem}
+.face-svg{width:120px;height:120px}
+.scan-line{position:absolute;left:0;right:0;height:1.5px;background:var(--t);opacity:.5;top:0;animation:scanAnim 2.8s ease-in-out infinite}
+@keyframes scanAnim{0%{top:0%;opacity:0}8%{opacity:.6}90%{opacity:.6}100%{top:100%;opacity:0}}
+.emo-bars{display:flex;flex-direction:column;gap:5px}
+.ebar-row{display:flex;align-items:center;gap:7px}
+.ebar-name{font-family:'Geist Mono',monospace;font-size:9px;color:var(--mu);width:56px;flex-shrink:0}
+.ebar-track{flex:1;height:3px;background:var(--s3);border-radius:2px;overflow:hidden}
+.ebar-fill{height:100%;border-radius:2px;transition:width .85s cubic-bezier(.4,0,.2,1)}
+.ebar-pct{font-family:'Geist Mono',monospace;font-size:9px;color:var(--mu);width:28px;text-align:right}
+
+/* text panel */
+.text-bubble{background:var(--s3);border:1px solid var(--b1);border-radius:var(--r8);padding:.75rem;font-size:11px;color:var(--tx);line-height:1.6;min-height:72px;margin-bottom:.9rem}
+.cursor-blink{display:inline-block;width:2px;height:12px;background:var(--t);animation:blink 1s infinite;vertical-align:middle}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+.sent-gauge{margin-bottom:.9rem}
+.sent-labels{display:flex;justify-content:space-between;font-family:'Geist Mono',monospace;font-size:9px;color:var(--mu);margin-bottom:4px}
+.sent-track{position:relative;width:100%;height:5px;border-radius:3px;background:linear-gradient(90deg,var(--co),var(--mu2) 45%,var(--gr));overflow:visible}
+.sent-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:13px;height:13px;border-radius:50%;background:var(--bg);border:2px solid #fff;transition:left .8s cubic-bezier(.4,0,.2,1);box-shadow:0 0 5px rgba(255,255,255,.3)}
+.kw-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:.75rem}
+.kw-chip{font-family:'Geist Mono',monospace;font-size:9px;padding:2px 7px;border-radius:2px;border:1px solid}
+.kw-pos{color:var(--gr);background:var(--gr2);border-color:rgba(52,211,153,.3)}
+.kw-neg{color:var(--co);background:var(--co2);border-color:rgba(255,101,132,.3)}
+.kw-neu{color:var(--mu);background:transparent;border-color:var(--b1)}
+
+/* fusion panel */
+.fus-emotion-box{text-align:center;padding:1.1rem .5rem;border:1px solid var(--b1);border-radius:var(--r8);background:var(--s3);margin-bottom:.85rem}
+.fus-emo-label{font-family:'Geist Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.12em;margin-bottom:4px}
+.fus-emo-val{font-size:1.4rem;font-weight:700;transition:all .5s}
+.fus-emo-conf{font-family:'Geist Mono',monospace;font-size:10px;color:var(--mu);margin-top:2px}
+.fus-scores{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:.85rem}
+.fscr{background:var(--s3);border:1px solid var(--b1);border-radius:var(--r8);padding:.55rem .5rem;text-align:center}
+.fscr-val{font-family:'Geist Mono',monospace;font-size:.95rem;font-weight:600}
+.fscr-lbl{font-size:9px;color:var(--mu);margin-top:2px}
+.risk-badge{width:100%;padding:9px;border-radius:var(--r8);text-align:center;font-family:'Geist Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;transition:all .5s;border:1px solid}
+.risk-low{background:var(--gr2);color:var(--gr);border-color:rgba(52,211,153,.3)}
+.risk-med{background:var(--am2);color:var(--am);border-color:rgba(249,168,37,.3)}
+.risk-hi{background:var(--re2);color:var(--re);border-color:rgba(248,113,113,.3)}
+.rec-box{margin-top:.75rem;font-size:10px;color:var(--mu);line-height:1.55;padding:.6rem;background:var(--s3);border-radius:var(--r4);border-left:2px solid var(--pu)}
+.rec-box strong{color:var(--pu);font-weight:500}
+
+/* ARCHITECTURE */
+.arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.arch-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r12);overflow:hidden}
+.arch-head{padding:.85rem 1.1rem;border-bottom:1px solid var(--b1);font-family:'Geist Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.arch-body{padding:1.25rem}
+.ml-layers{display:flex;flex-direction:column;gap:8px}
+.ml-row{display:flex;gap:8px;align-items:center}
+.ml-box{flex:1;padding:8px 6px;border-radius:var(--r4);text-align:center;font-family:'Geist Mono',monospace;font-size:9px;font-weight:500;border:1px solid}
+.ml-t{color:var(--t);background:var(--t3);border-color:var(--b2)}
+.ml-a{color:var(--am);background:var(--am2);border-color:rgba(249,168,37,.25)}
+.ml-p{color:var(--pu);background:var(--pu2);border-color:rgba(167,139,250,.25)}
+.ml-g{color:var(--gr);background:var(--gr2);border-color:rgba(52,211,153,.25)}
+.ml-n{color:var(--mu);background:var(--s3);border-color:var(--b1)}
+.ml-down{text-align:center;color:var(--mu2);font-size:12px;margin:1px 0}
+
+/* STACK */
+.stack-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.stack-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r8);padding:1.1rem}
+.stack-label{font-family:'Geist Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.6rem}
+.stack-pills{display:flex;flex-wrap:wrap;gap:5px}
+.sp{font-family:'Geist Mono',monospace;font-size:9px;font-weight:500;padding:3px 9px;border-radius:3px;border:1px solid}
+.sp-t{color:var(--t);background:var(--t3);border-color:var(--b1)}
+.sp-a{color:var(--am);background:var(--am2);border-color:rgba(249,168,37,.2)}
+.sp-p{color:var(--pu);background:var(--pu2);border-color:rgba(167,139,250,.2)}
+.sp-g{color:var(--gr);background:var(--gr2);border-color:rgba(52,211,153,.2)}
+
+/* RESPONSIBLE AI */
+.rai-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.rai-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r12);padding:1.25rem}
+.rai-icon{font-size:1.2rem;margin-bottom:.5rem}
+.rai-name{font-size:.9rem;font-weight:600;color:#e4f4ff;margin-bottom:.35rem}
+.rai-desc{font-size:11px;color:var(--mu);line-height:1.6}
+.fair-bars{display:flex;flex-direction:column;gap:5px;margin-top:.75rem}
+.fb-row{display:flex;align-items:center;gap:7px}
+.fb-name{font-family:'Geist Mono',monospace;font-size:9px;color:var(--mu);width:48px;flex-shrink:0}
+.fb-track{flex:1;height:4px;background:var(--s3);border-radius:2px;overflow:hidden}
+.fb-fill{height:100%;border-radius:2px;background:var(--t)}
+.fb-val{font-family:'Geist Mono',monospace;font-size:9px;color:var(--t);width:32px;text-align:right}
+
+/* FOOTER */
+footer{position:relative;z-index:1;border-top:1px solid var(--b1);padding:2.5rem 2rem;text-align:center}
+.footer-links{display:flex;justify-content:center;gap:2rem;margin-bottom:1rem}
+.footer-links a{font-family:'Geist Mono',monospace;font-size:10px;color:var(--mu);transition:color .2s;letter-spacing:.06em}
+.footer-links a:hover{color:var(--t)}
+footer p{font-size:11px;color:var(--mu2)}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+
+@media(max-width:900px){.demo-grid{grid-template-columns:1fr}.arch-grid{grid-template-columns:1fr}.ps-grid{grid-template-columns:1fr}.rai-grid{grid-template-columns:1fr}nav{padding:0 1rem}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    perceive_ai
+  </div>
+  <div class="nav-links">
+    <a href="#overview">Overview</a>
+    <a href="#demo">Demo</a>
+    <a href="#architecture">Architecture</a>
+    <a href="https://github.com/aasthav1811/percieve-ai" target="_blank">GitHub ↗</a>
+  </div>
+  <a href="#demo" class="nav-btn">▶ RUN DEMO</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge"><div class="hero-badge-dot"></div>Applied Deep Learning · Flagship Project</div>
+  <h1 class="hero-title">Multimodal Emotional<br>Intelligence, Fused.</h1>
+  <p class="hero-sub">One pipeline reads a face with a fine-tuned ViT, reads language with RoBERTa, and fuses both into a single emotional state — with valence, arousal, and a risk flag the support floor can act on.</p>
+  <div class="hero-tags">
+    <span class="htag htag-t">Computer Vision</span>
+    <span class="htag htag-a">Multimodal AI</span>
+    <span class="htag htag-p">Deep Learning</span>
+    <span class="htag htag-t">Transformers</span>
+    <span class="htag htag-a">Responsible AI</span>
+    <span class="htag htag-p">FastAPI · React</span>
+  </div>
+  <div class="hero-actions">
+    <a href="https://perceive-ai-steel.vercel.app" target="_blank" class="btn-p">↗ Live Demo</a>
+    <a href="#demo" class="btn-g">Run Simulation</a>
+    <a href="#architecture" class="btn-g">Architecture deep-dive</a>
+  </div>
+  <div class="hero-stat-row">
+    <div class="hero-stat"><div class="n">91%</div><div class="l">FACIAL ACCURACY</div></div>
+    <div class="hero-stat"><div class="n">87%</div><div class="l">TEXT F1 SCORE</div></div>
+    <div class="hero-stat"><div class="n">94%</div><div class="l">FUSED ACCURACY</div></div>
+    <div class="hero-stat"><div class="n">&lt;250ms</div><div class="l">INFERENCE TIME</div></div>
+    <div class="hero-stat"><div class="n">7</div><div class="l">EMOTION CLASSES</div></div>
+  </div>
+</section>
+
+<section class="sec reveal" id="overview">
+  <div class="sec-eye">01 · Project Overview</div>
+  <h2 class="sec-title">From signal noise to emotional clarity</h2>
+  <p class="sec-sub">Support and engagement tools are blind to how users actually feel. This system changes that.</p>
+  <div class="ps-grid">
+    <div class="ps-card problem">
+      <div class="ps-label">The Problem</div>
+      <div class="ps-title">Single-modal systems miss 60% of emotional signals</div>
+      <div class="ps-body">Facial analysis alone is fooled by poker faces. Text sentiment alone misses visual distress. Neither is sufficient — the gap costs businesses in churn, missed escalations, and poor care moments.</div>
+    </div>
+    <div class="ps-card solution">
+      <div class="ps-label">The Solution</div>
+      <div class="ps-title">Late-fusion multimodal architecture with explainability</div>
+      <div class="ps-body">Two encoder branches (ViT for vision, RoBERTa for text) feed a cross-modal attention fusion layer. The unified embedding powers emotion classification, risk scoring, and recommendations.</div>
+    </div>
+    <div class="ps-card approach">
+      <div class="ps-label">Technical Approach</div>
+      <div class="ps-title">Pre-trained encoders + learned fusion head — integration is the moat</div>
+      <div class="ps-body">FER2013-fine-tuned ViT for facial features + RoBERTa sentiment backbone. Fused via lightweight cross-modal attention. Disciplined integration at production quality.</div>
+    </div>
+    <div class="ps-card result">
+      <div class="ps-label">Impact Metrics</div>
+      <div class="ps-title">Measurable performance lift across modalities</div>
+      <div class="ps-body">Each modality alone underperforms. The fusion delivers the real gain — a consistent 3–4% lift over the best single modality, with significantly better risk flag precision.</div>
+      <div class="metric-row">
+        <div class="metric"><div class="num t">91%</div><div class="lbl">Vision</div></div>
+        <div class="metric"><div class="num a">87%</div><div class="lbl">Text F1</div></div>
+        <div class="metric"><div class="num p">94%</div><div class="lbl">Fused</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec reveal" style="padding-top:0">
+  <div class="sec-eye">02 · Model Pipeline</div>
+  <h2 class="sec-title">End-to-end inference in &lt;250ms</h2>
+  <p class="sec-sub">From raw face image and text input to actionable emotional intelligence.</p>
+  <div class="pipe-wrap">
+    <div class="pipe-step"><div class="pipe-box p1" data-n="INPUT"><div class="pipe-icon">📸</div><div class="pipe-name">Raw Inputs</div><div class="pipe-desc">Video frame + transcript / live text</div></div></div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step"><div class="pipe-box p2" data-n="PREPROCESS"><div class="pipe-icon">⚙️</div><div class="pipe-name">Preprocessing</div><div class="pipe-desc">MTCNN face detect · BPE tokenise</div></div></div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step"><div class="pipe-box p3" data-n="ENCODE"><div class="pipe-icon">🧠</div><div class="pipe-name">Dual Encoders</div><div class="pipe-desc">ViT (vision) · RoBERTa (text)</div></div></div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step"><div class="pipe-box p4" data-n="FUSE"><div class="pipe-icon">⚡</div><div class="pipe-name">Fusion Layer</div><div class="pipe-desc">Cross-modal attention · Weighted gate</div></div></div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step"><div class="pipe-box p5" data-n="OUTPUT"><div class="pipe-icon">🎯</div><div class="pipe-name">Outputs</div><div class="pipe-desc">Emotion · Valence · Risk · Recommendation</div></div></div>
+  </div>
+</section>
+
+<div id="demo" class="demo-wrap">
+  <div class="demo-inner">
+    <div class="sec-eye" style="margin-bottom:.5rem">03 · Live Demo Simulation</div>
+    <h2 class="sec-title" style="margin-bottom:.35rem">Real-time multimodal fusion</h2>
+    <p class="sec-sub" style="margin-bottom:1.25rem">Select a scenario to see the full pipeline animate across all three modalities.</p>
+    <div class="scenario-bar">
+      <button class="sc-btn active" onclick="setScene(0)">😊 Happy Customer</button>
+      <button class="sc-btn" onclick="setScene(1)">😤 Frustrated User</button>
+      <button class="sc-btn" onclick="setScene(2)">😰 Anxious Caller</button>
+      <button class="sc-btn" onclick="setScene(3)">😐 Neutral Session</button>
+      <div class="live-pill"><div class="live-dot"></div>LIVE SIM</div>
+    </div>
+    <div class="demo-grid">
+      <!-- FACE PANEL -->
+      <div class="demo-panel">
+        <div class="dp-head">
+          <div class="dp-dot" style="background:var(--t)"></div>
+          <div class="dp-title">Facial Expression</div>
+          <div class="dp-badge" style="color:var(--t);background:var(--t3);border:1px solid var(--b1)">ViT · FER2013</div>
+        </div>
+        <div class="dp-body">
+          <div class="face-wrap">
+            <svg class="face-svg" viewBox="0 0 120 120">
+              <defs>
+                <radialGradient id="fglow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" id="glow-c" stop-color="rgba(15,245,196,0.1)"/>
+                  <stop offset="100%" stop-color="transparent"/>
+                </radialGradient>
+              </defs>
+              <ellipse cx="60" cy="60" rx="44" ry="47" fill="#0a1628" stroke="#1a3a6e" stroke-width="1"/>
+              <ellipse cx="60" cy="60" rx="44" ry="47" fill="url(#fglow)" id="face-glow"/>
+              <line x1="18" y1="60" x2="102" y2="60" stroke="rgba(15,245,196,0.05)" stroke-width=".5"/>
+              <line x1="60" y1="13" x2="60" y2="107" stroke="rgba(15,245,196,0.05)" stroke-width=".5"/>
+              <ellipse id="leye" cx="40" cy="44" rx="11" ry="8" fill="rgba(15,245,196,0.12)" stroke="rgba(15,245,196,0.3)" stroke-width=".5"/>
+              <ellipse id="reye" cx="80" cy="44" rx="11" ry="8" fill="rgba(15,245,196,0.12)" stroke="rgba(15,245,196,0.3)" stroke-width=".5"/>
+              <circle cx="40" cy="44" r="4" fill="var(--t)" opacity=".7"/>
+              <circle cx="80" cy="44" r="4" fill="var(--t)" opacity=".7"/>
+              <path id="lbrow" d="M29,32 Q40,26 51,31" fill="none" stroke="rgba(15,245,196,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+              <path id="rbrow" d="M69,31 Q80,26 91,32" fill="none" stroke="rgba(15,245,196,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+              <path id="fmouth" d="M42,78 Q60,90 78,78" fill="none" stroke="rgba(15,245,196,0.6)" stroke-width="2" stroke-linecap="round"/>
+              <path d="M14,20 L14,13 L21,13" fill="none" stroke="var(--t)" stroke-width=".75" opacity=".45"/>
+              <path d="M106,20 L106,13 L99,13" fill="none" stroke="var(--t)" stroke-width=".75" opacity=".45"/>
+              <path d="M14,100 L14,107 L21,107" fill="none" stroke="var(--t)" stroke-width=".75" opacity=".45"/>
+              <path d="M106,100 L106,107 L99,107" fill="none" stroke="var(--t)" stroke-width=".75" opacity=".45"/>
+              <text x="60" y="108" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="7" fill="rgba(15,245,196,0.5)" id="face-conf-label">CONF: 94.2%</text>
+            </svg>
+            <div class="scan-line"></div>
+          </div>
+          <div class="emo-bars" id="emo-bars"></div>
+        </div>
+      </div>
+
+      <!-- TEXT PANEL -->
+      <div class="demo-panel">
+        <div class="dp-head">
+          <div class="dp-dot" style="background:var(--am)"></div>
+          <div class="dp-title">Text Sentiment</div>
+          <div class="dp-badge" style="color:var(--am);background:var(--am2);border:1px solid rgba(249,168,37,.2)">RoBERTa</div>
+        </div>
+        <div class="dp-body">
+          <div class="text-bubble"><span id="typed-text"></span><span class="cursor-blink"></span></div>
+          <div class="sent-gauge">
+            <div class="sent-labels">
+              <span>Negative</span>
+              <span id="sent-score" style="font-family:'Geist Mono',monospace;color:var(--tx)">0.0</span>
+              <span>Positive</span>
+            </div>
+            <div class="sent-track">
+              <div class="sent-thumb" id="sent-thumb" style="left:50%"></div>
+            </div>
+          </div>
+          <div class="kw-chips" id="kw-chips"></div>
+          <div style="margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--b1)">
+            <div style="font-family:'Geist Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.15em;margin-bottom:6px">EMBEDDING ACTIVATION</div>
+            <div id="embed-vis" style="display:flex;gap:2px;align-items:flex-end;height:28px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FUSION PANEL -->
+      <div class="demo-panel">
+        <div class="dp-head">
+          <div class="dp-dot" style="background:var(--pu)"></div>
+          <div class="dp-title">Multimodal Fusion</div>
+          <div class="dp-badge" style="color:var(--pu);background:var(--pu2);border:1px solid rgba(167,139,250,.2)">Cross-Attn</div>
+        </div>
+        <div class="dp-body">
+          <div class="fus-emotion-box">
+            <div class="fus-emo-label">DOMINANT EMOTION</div>
+            <div class="fus-emo-val" id="fus-emo">😊 Happy</div>
+            <div class="fus-emo-conf" id="fus-conf">Confidence: 94.2%</div>
+          </div>
+          <div class="fus-scores">
+            <div class="fscr"><div class="fscr-val" id="fv" style="color:var(--gr)">+0.87</div><div class="fscr-lbl">Valence</div></div>
+            <div class="fscr"><div class="fscr-val" id="fa" style="color:var(--am)">0.38</div><div class="fscr-lbl">Arousal</div></div>
+            <div class="fscr"><div class="fscr-val" id="fw-v" style="color:var(--t)">0.56</div><div class="fscr-lbl">Visual weight</div></div>
+            <div class="fscr"><div class="fscr-val" id="fw-t" style="color:var(--am)">0.44</div><div class="fscr-lbl">Text weight</div></div>
+          </div>
+          <div class="risk-badge risk-low" id="risk-badge">⬤ LOW RISK · STABLE</div>
+          <div class="rec-box" id="rec-box"><strong>Recommendation:</strong> Maintain current engagement. User is satisfied — ideal for NPS or upsell.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="sec reveal" id="architecture">
+  <div class="sec-eye">04 · Architecture</div>
+  <h2 class="sec-title">Model & fusion architecture</h2>
+  <p class="sec-sub">Two independent encoder branches joined by cross-modal attention — designed for explainability and extensibility.</p>
+  <div class="arch-grid">
+    <div class="arch-card">
+      <div class="arch-head">🧠 Model architecture</div>
+      <div class="arch-body">
+        <div class="ml-layers">
+          <div class="ml-row">
+            <div class="ml-box ml-n">📸 Face frame (224×224)</div>
+            <div style="width:8px;flex-shrink:0"></div>
+            <div class="ml-box ml-n">📝 Text input (tokens)</div>
+          </div>
+          <div class="ml-down">↓ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ↓</div>
+          <div class="ml-row">
+            <div class="ml-box ml-t">ViT Encoder<br><span style="font-size:8px;opacity:.7">FER2013 fine-tuned</span></div>
+            <div style="width:8px;flex-shrink:0"></div>
+            <div class="ml-box ml-a">RoBERTa-base<br><span style="font-size:8px;opacity:.7">GoEmotions fine-tuned</span></div>
+          </div>
+          <div class="ml-down">↓ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ↓</div>
+          <div class="ml-row">
+            <div class="ml-box ml-t">Visual embedding<br><span style="font-size:8px;opacity:.7">512-d feature vector</span></div>
+            <div style="width:8px;flex-shrink:0"></div>
+            <div class="ml-box ml-a">Text embedding<br><span style="font-size:8px;opacity:.7">768-d [CLS] vector</span></div>
+          </div>
+          <div class="ml-down">↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓</div>
+          <div class="ml-row">
+            <div class="ml-box ml-p" style="flex:2;text-align:center">Cross-Modal Attention Fusion<span style="font-size:8px;opacity:.7;display:block">Weighted concat → MLP projector (256-d)</span></div>
+          </div>
+          <div class="ml-down">↓</div>
+          <div class="ml-row">
+            <div class="ml-box ml-g" style="flex:2;text-align:center">Classifier Head<span style="font-size:8px;opacity:.7;display:block">7 Emotions · Valence · Arousal · Risk Score</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="arch-card">
+      <div class="arch-head">🔄 Data flow diagram</div>
+      <div class="arch-body" style="padding:.5rem">
+        <svg viewBox="0 0 300 300" width="100%" style="display:block">
+          <defs><marker id="da" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <rect x="10" y="8" width="120" height="28" rx="4" fill="#0a1628" stroke="#0ec9a840" stroke-width=".75"/><text x="70" y="26" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" fill="#0ec9a8">Face Input</text>
+          <rect x="170" y="8" width="120" height="28" rx="4" fill="#0a1628" stroke="#f9a82540" stroke-width=".75"/><text x="230" y="26" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="9" fill="#f9a825">Text Input</text>
+          <line x1="70" y1="36" x2="70" y2="54" stroke="#0ec9a8" stroke-width=".75" marker-end="url(#da)" opacity=".6"/>
+          <line x1="230" y1="36" x2="230" y2="54" stroke="#f9a825" stroke-width=".75" marker-end="url(#da)" opacity=".6"/>
+          <rect x="10" y="54" width="120" height="30" rx="4" fill="#0c2035" stroke="#0ec9a850" stroke-width=".75"/><text x="70" y="69" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8" fill="#0ec9a8">MTCNN Detection</text><text x="70" y="79" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="7" fill="#4a6a8a">Face crop 112×112</text>
+          <rect x="170" y="54" width="120" height="30" rx="4" fill="#0c2035" stroke="#f9a82550" stroke-width=".75"/><text x="230" y="69" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8" fill="#f9a825">BPE Tokenizer</text><text x="230" y="79" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="7" fill="#4a6a8a">max_len=128 tokens</text>
+          <line x1="70" y1="84" x2="70" y2="102" stroke="#0ec9a8" stroke-width=".75" marker-end="url(#da)" opacity=".6"/>
+          <line x1="230" y1="84" x2="230" y2="102" stroke="#f9a825" stroke-width=".75" marker-end="url(#da)" opacity=".6"/>
+          <rect x="10" y="102" width="120" height="30" rx="4" fill="#0a2a1a" stroke="#0ec9a850" stroke-width=".75"/><text x="70" y="117" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8" fill="#0ec9a8">ViT Encoder</text><text x="70" y="127" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="7" fill="#4a6a8a">512-d visual embed</text>
+          <rect x="170" y="102" width="120" height="30" rx="4" fill="#2a1a0a" stroke="#f9a82550" stroke-width=".75"/><text x="230" y="117" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8" fill="#f9a825">RoBERTa Encoder</text><text x="230" y="127" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="7" fill="#4a6a8a">768-d text embed</text>
+          <path d="M70 132 L70 150 L80 160" fill="none" stroke="#0ec9a8" stroke-width=".75" marker-end="url(#da)" opacity=".6"/>
+          <path d="M230 132 L230 150 L220 160" fill="none" stroke="#f9a825" stroke-width=".75" marker-end="url(#da)" opacity=".6"/>
+          <rect x="65" y="160" width="170" height="30" rx="4" fill="#1a0d35" stroke="#a78bfa70" stroke-width=".75"/><text x="150" y="175" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="8" fill="#a78bfa">Cross-Modal Fusion</text><text x="150" y="185" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="7" fill="#4a6a8a">Attention + MLP (256-d)</text>
+          <path d="M100 190 L50 215" fill="none" stroke="#a78bfa" stroke-width=".75" marker-end="url(#da)" opacity=".5"/>
+          <line x1="150" y1="190" x2="150" y2="215" stroke="#a78bfa" stroke-width=".75" marker-end="url(#da)" opacity=".5"/>
+          <path d="M200 190 L250 215" fill="none" stroke="#a78bfa" stroke-width=".75" marker-end="url(#da)" opacity=".5"/>
+          <rect x="10" y="215" width="80" height="24" rx="4" fill="#0a200d" stroke="#34d39960" stroke-width=".75"/><text x="50" y="230" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="7.5" fill="#34d399">Emotion Label</text>
+          <rect x="110" y="215" width="80" height="24" rx="4" fill="#0a200d" stroke="#34d39960" stroke-width=".75"/><text x="150" y="230" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="7.5" fill="#34d399">Valence/Arousal</text>
+          <rect x="210" y="215" width="80" height="24" rx="4" fill="#200a0a" stroke="#f8717160" stroke-width=".75"/><text x="250" y="230" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="7.5" fill="#f87171">Risk Flag</text>
+          <line x1="150" y1="239" x2="150" y2="257" stroke="#a78bfa" stroke-width=".75" marker-end="url(#da)" opacity=".4"/>
+          <rect x="75" y="257" width="150" height="24" rx="4" fill="#1a1a2a" stroke="#a78bfa40" stroke-width=".75"/><text x="150" y="272" text-anchor="middle" font-family="'Geist Mono',monospace" font-size="7.5" fill="#a78bfa">Recommendation</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="stack-grid">
+    <div class="stack-card"><div class="stack-label">Vision Branch</div><div class="stack-pills"><span class="sp sp-t">PyTorch</span><span class="sp sp-t">torchvision</span><span class="sp sp-t">MTCNN</span><span class="sp sp-t">FER2013</span></div></div>
+    <div class="stack-card"><div class="stack-label">NLP Branch</div><div class="stack-pills"><span class="sp sp-a">HuggingFace 🤗</span><span class="sp sp-a">RoBERTa-base</span><span class="sp sp-a">GoEmotions</span></div></div>
+    <div class="stack-card"><div class="stack-label">Fusion & Explainability</div><div class="stack-pills"><span class="sp sp-p">Cross-Attn</span><span class="sp sp-p">SHAP</span><span class="sp sp-p">GradCAM</span></div></div>
+    <div class="stack-card"><div class="stack-label">Deployment (All Free)</div><div class="stack-pills"><span class="sp sp-g">FastAPI</span><span class="sp sp-g">React + Vite</span><span class="sp sp-g">Render</span><span class="sp sp-g">Vercel</span></div></div>
+  </div>
+</section>
+
+<section class="sec reveal" style="padding-top:0">
+  <div class="sec-eye">05 · Responsible AI</div>
+  <h2 class="sec-title">Fairness & explainability built in</h2>
+  <p class="sec-sub">Emotion AI without bias auditing is a liability. This is a feature, not an afterthought.</p>
+  <div class="rai-grid">
+    <div class="rai-card">
+      <div class="rai-icon">🔍</div>
+      <div class="rai-name">Bias Auditing (AIF360)</div>
+      <div class="rai-desc">Demographic parity testing across gender, age, and skin tone groups. Disparate impact ratio computed per cohort and surfaced in the model card.</div>
+      <div class="fair-bars">
+        <div class="fb-row"><span class="fb-name">18–30</span><div class="fb-track"><div class="fb-fill" style="width:93%"></div></div><span class="fb-val">93%</span></div>
+        <div class="fb-row"><span class="fb-name">31–50</span><div class="fb-track"><div class="fb-fill" style="width:91%"></div></div><span class="fb-val">91%</span></div>
+        <div class="fb-row"><span class="fb-name">51–70</span><div class="fb-track"><div class="fb-fill" style="width:88%;background:var(--am)"></div></div><span class="fb-val" style="color:var(--am)">88%</span></div>
+        <div class="fb-row"><span class="fb-name">Female</span><div class="fb-track"><div class="fb-fill" style="width:92%"></div></div><span class="fb-val">92%</span></div>
+        <div class="fb-row"><span class="fb-name">Male</span><div class="fb-track"><div class="fb-fill" style="width:91%"></div></div><span class="fb-val">91%</span></div>
+      </div>
+    </div>
+    <div class="rai-card"><div class="rai-icon">💡</div><div class="rai-name">SHAP Explainability</div><div class="rai-desc">Per-prediction attribution maps showing which facial regions and text keywords most influenced the output. Engineers and auditors can interrogate any single decision.</div></div>
+    <div class="rai-card"><div class="rai-icon">🛡️</div><div class="rai-name">Fairness Constraints</div><div class="rai-desc">Equalized odds enforcement during fine-tuning to prevent systematic misclassification of any demographic group. Tracked as a first-class training metric.</div></div>
+    <div class="rai-card"><div class="rai-icon">📊</div><div class="rai-name">GradCAM Attribution</div><div class="rai-desc">Gradient-weighted class activation maps overlay on the input face, showing exactly which pixel regions drove the emotion prediction — not a black box.</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-links">
+    <a href="https://github.com/aasthav1811/percieve-ai" target="_blank">GitHub</a>
+    <a href="https://perceive-ai-steel.vercel.app" target="_blank">Live Demo</a>
+    <a href="index.html">All Projects</a>
+  </div>
+  <p>Perceive AI — Multimodal Emotional Intelligence · PyTorch · HuggingFace · FastAPI · React</p>
+</footer>
+
+<script>
+/* NEURAL CANVAS */
+const cv=document.getElementById('bg-canvas'),cx=cv.getContext('2d');
+let nodes=[];
+function resize(){cv.width=innerWidth;cv.height=innerHeight;initNodes()}
+function initNodes(){nodes=[];const n=Math.min(70,Math.floor(innerWidth*innerHeight/12000));for(let i=0;i<n;i++)nodes.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,r:Math.random()*1.5+.5})}
+function drawCanvas(){cx.clearRect(0,0,cv.width,cv.height);nodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>cv.width)n.vx*=-1;if(n.y<0||n.y>cv.height)n.vy*=-1});for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<140){cx.strokeStyle=`rgba(15,245,196,${.18*(1-d/140)})`;cx.lineWidth=.4;cx.beginPath();cx.moveTo(nodes[i].x,nodes[i].y);cx.lineTo(nodes[j].x,nodes[j].y);cx.stroke()}}nodes.forEach(n=>{cx.fillStyle='rgba(15,245,196,.5)';cx.beginPath();cx.arc(n.x,n.y,n.r,0,Math.PI*2);cx.fill()});requestAnimationFrame(drawCanvas)}
+window.addEventListener('resize',resize);resize();drawCanvas();
+
+/* SCROLL REVEAL */
+const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('in')),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* DEMO SCENARIOS */
+const SCENES=[
+  {text:"This is exactly what I needed. The response was fast and the solution worked perfectly. Very impressed!",
+   emotions:{Happy:82,Surprised:8,Neutral:6,Sad:2,Angry:1,Fearful:1},
+   colors:{Happy:'#34d399',Surprised:'#0ec9a8',Neutral:'#4a6a8a',Sad:'#2a4a6a',Angry:'#ff6584',Fearful:'#f9a825'},
+   sentiment:.87,kws:[{w:'exactly needed',t:'pos'},{w:'fast',t:'pos'},{w:'perfectly',t:'pos'},{w:'impressed',t:'pos'}],
+   fusEmo:'😊 Happy',fusColor:'#34d399',conf:'94.2%',val:'+0.87',aro:'0.38',vw:'0.56',tw:'0.44',
+   risk:'risk-low',riskLabel:'⬤ LOW RISK · STABLE',
+   rec:'<strong>Recommendation:</strong> Maintain engagement. User is satisfied — ideal for NPS or upsell.',
+   glowC:'rgba(52,211,153,.12)',mouth:'M42,78 Q60,90 78,78',browL:'M29,32 Q40,26 51,31',browR:'M69,31 Q80,26 91,32',faceConf:'94.2%'},
+  {text:"This is ridiculous. I've been waiting 45 minutes and nobody has resolved my issue. Completely unacceptable.",
+   emotions:{Angry:71,Sad:14,Disgusted:9,Neutral:4,Happy:1,Fearful:1},
+   colors:{Angry:'#f87171',Sad:'#a78bfa',Disgusted:'#f9a825',Neutral:'#4a6a8a',Happy:'#34d399',Fearful:'#0ec9a8'},
+   sentiment:.06,kws:[{w:'ridiculous',t:'neg'},{w:'45 minutes',t:'neg'},{w:'nobody',t:'neg'},{w:'unacceptable',t:'neg'}],
+   fusEmo:'😤 Angry',fusColor:'#f87171',conf:'88.7%',val:'-0.79',aro:'0.91',vw:'0.62',tw:'0.38',
+   risk:'risk-hi',riskLabel:'⚠ HIGH RISK · ESCALATE NOW',
+   rec:'<strong>Action Required:</strong> Immediate escalation to senior agent. Offer acknowledgment. Churn probability: 73%.',
+   glowC:'rgba(248,113,113,.12)',mouth:'M42,84 Q60,72 78,84',browL:'M29,29 Q40,23 51,28',browR:'M69,28 Q80,23 91,29',faceConf:'88.7%'},
+  {text:"I'm not sure if my account is secure. I saw some transactions I didn't recognise and I'm worried.",
+   emotions:{Fearful:58,Sad:22,Neutral:11,Surprised:6,Happy:2,Angry:1},
+   colors:{Fearful:'#f9a825',Sad:'#a78bfa',Neutral:'#4a6a8a',Surprised:'#0ec9a8',Happy:'#34d399',Angry:'#f87171'},
+   sentiment:.28,kws:[{w:'not sure',t:'neg'},{w:"didn't recognise",t:'neg'},{w:'worried',t:'neg'},{w:'secure',t:'neu'}],
+   fusEmo:'😰 Fearful',fusColor:'#f9a825',conf:'81.3%',val:'-0.42',aro:'0.67',vw:'0.51',tw:'0.49',
+   risk:'risk-med',riskLabel:'◈ MEDIUM RISK · MONITOR',
+   rec:'<strong>Recommendation:</strong> Calm reassurance protocol. Verify account security immediately. Follow-up within 24h.',
+   glowC:'rgba(249,168,37,.09)',mouth:'M44,82 Q60,80 76,82',browL:'M29,31 Q40,27 51,31',browR:'M69,31 Q80,27 91,31',faceConf:'81.3%'},
+  {text:"I would like to update my shipping address for order number 4829. The new address is 14 Oak Street.",
+   emotions:{Neutral:74,Happy:12,Sad:7,Surprised:4,Angry:2,Fearful:1},
+   colors:{Neutral:'#4a6a8a',Happy:'#34d399',Sad:'#a78bfa',Surprised:'#0ec9a8',Angry:'#f87171',Fearful:'#f9a825'},
+   sentiment:.51,kws:[{w:'update',t:'neu'},{w:'shipping address',t:'neu'},{w:'order 4829',t:'neu'}],
+   fusEmo:'😐 Neutral',fusColor:'#4a6a8a',conf:'78.9%',val:'+0.03',aro:'0.21',vw:'0.44',tw:'0.56',
+   risk:'risk-low',riskLabel:'⬤ LOW RISK · TRANSACTIONAL',
+   rec:'<strong>Recommendation:</strong> Transactional resolution. Focus on speed and accuracy. No emotional intervention needed.',
+   glowC:'rgba(74,106,138,.07)',mouth:'M44,81 Q60,81 76,81',browL:'M29,33 Q40,30 51,33',browR:'M69,33 Q80,30 91,33',faceConf:'78.9%'},
+];
+
+let curScene=0,typeTimer=null,autoCycle=null;
+
+function setScene(idx){
+  curScene=idx;
+  document.querySelectorAll('.sc-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  const s=SCENES[idx];
+  /* emotion bars */
+  document.getElementById('emo-bars').innerHTML=Object.entries(s.emotions).map(([name,val])=>{
+    const c=s.colors[name]||'#4a6a8a';
+    return `<div class="ebar-row"><span class="ebar-name">${name}</span><div class="ebar-track"><div class="ebar-fill" style="width:${val}%;background:${c}"></div></div><span class="ebar-pct">${val}%</span></div>`;
+  }).join('');
+  /* face */
+  document.getElementById('fmouth').setAttribute('d',s.mouth);
+  document.getElementById('lbrow').setAttribute('d',s.browL);
+  document.getElementById('rbrow').setAttribute('d',s.browR);
+  document.getElementById('face-conf-label').textContent='CONF: '+s.faceConf;
+  document.querySelector('#face-glow stop').style.stopColor=s.glowC;
+  /* typewriter */
+  const txtEl=document.getElementById('typed-text');txtEl.textContent='';
+  clearInterval(typeTimer);let i=0;
+  typeTimer=setInterval(()=>{if(i<s.text.length)txtEl.textContent+=s.text[i++];else clearInterval(typeTimer)},22);
+  /* sentiment */
+  document.getElementById('sent-thumb').style.left=(s.sentiment*100)+'%';
+  document.getElementById('sent-score').textContent=s.sentiment.toFixed(2);
+  /* keywords */
+  document.getElementById('kw-chips').innerHTML=s.kws.map(k=>`<span class="kw-chip kw-${k.t}">${k.w}</span>`).join('');
+  /* embedding */
+  let eviz='';for(let j=0;j<36;j++){const h=Math.floor(Math.random()*20)+4;const c=Math.random()>.65?'var(--am)':'var(--b1)';eviz+=`<span style="display:inline-block;width:4px;height:${h}px;background:${c};border-radius:1px;vertical-align:bottom;transition:height .5s"></span>`}
+  document.getElementById('embed-vis').innerHTML=eviz;
+  /* fusion */
+  const fe=document.getElementById('fus-emo');fe.textContent=s.fusEmo;fe.style.color=s.fusColor;
+  document.getElementById('fus-conf').textContent='Confidence: '+s.conf;
+  const fv=document.getElementById('fv');fv.textContent=s.val;fv.style.color=parseFloat(s.val)>=0?'var(--gr)':'var(--co)';
+  document.getElementById('fa').textContent=s.aro;
+  document.getElementById('fw-v').textContent=s.vw;
+  document.getElementById('fw-t').textContent=s.tw;
+  const rb=document.getElementById('risk-badge');rb.className='risk-badge '+s.risk;rb.textContent=s.riskLabel;
+  document.getElementById('rec-box').innerHTML=s.rec;
+}
+
+function startAutoCycle(){autoCycle=setInterval(()=>setScene((curScene+1)%4),5000)}
+document.querySelectorAll('.sc-btn').forEach(b=>b.addEventListener('click',()=>{clearInterval(autoCycle);autoCycle=null}));
+setScene(0);startAutoCycle();
+</script>
+</body>
+</html>

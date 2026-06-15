@@ -1,362 +1,365 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
-</head>
-<body>
-<x-dc>
-<helmet>
+<title>ChurnIQ — Churn Prediction & Retention Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  @keyframes ciqFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
-  @keyframes ciqUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes ciqBar { from{opacity:.35} to{opacity:1} }
-  @keyframes ciqPulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#faf5ef;color:#4a3728;font-family:'Geist',sans-serif;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#faf5ef}::-webkit-scrollbar-thumb{background:rgba(192,57,27,.2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes barGrow{from{width:0}to{width:var(--w)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:58px;background:rgba(250,245,239,.92);backdrop-filter:blur(14px);border-bottom:1px solid rgba(192,57,27,.12)}
+.nav-brand{display:flex;align-items:center;gap:.6rem}
+.nav-logo{width:26px;height:26px;background:#c0391b;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff}
+.nav-name{font-size:15px;font-weight:700;color:#1c1209;letter-spacing:-.02em}
+.nav-links{display:flex;align-items:center;gap:2rem}
+.nav-links a{font-size:13px;color:#7a6050;text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:#c0391b}
+.nav-github{background:#1c1209;color:#faf5ef !important;padding:7px 16px;border-radius:7px;font-size:12px;font-weight:600}
+
+header{padding:9rem 2rem 4rem;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:4rem;align-items:start;animation:fadeUp .7s .1s both}
+.hero-breadcrumb{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.bc-tag{font-family:'Geist Mono',monospace;font-size:9px;padding:3px 9px;border-radius:3px;letter-spacing:.1em;text-transform:uppercase}
+.bc-orange{background:rgba(192,57,27,.1);color:#c0391b;border:1px solid rgba(192,57,27,.2)}
+.bc-line{height:1px;flex:1;max-width:60px;background:rgba(192,57,27,.25)}
+.bc-dim{font-size:.83rem;color:#9a8070;font-weight:300}
+h1{font-size:clamp(2.2rem,4vw,3.4rem);font-weight:800;color:#1c1209;line-height:1.08;letter-spacing:-.035em;margin:0 0 1.2rem}
+h1 em{font-style:normal;color:#c0391b}
+.hero-desc{font-size:.97rem;font-weight:300;color:#7a6050;line-height:1.85;margin:0 0 2rem}
+.hero-desc em{color:#c0391b;font-style:normal;font-weight:500}
+.hero-btns{display:flex;gap:.75rem;flex-wrap:wrap}
+.btn-orange{font-size:14px;font-weight:600;color:#fff;background:#c0391b;padding:12px 22px;text-decoration:none;border-radius:8px;transition:opacity .2s}
+.btn-orange:hover{opacity:.88}
+.btn-outline{font-size:14px;font-weight:500;color:#4a3728;border:1px solid rgba(74,55,40,.25);padding:12px 22px;text-decoration:none;border-radius:8px;background:transparent;transition:all .15s}
+.btn-outline:hover{border-color:#c0391b;color:#c0391b}
+
+/* RISK LEDGER CARD */
+.risk-card{background:#fff;border:1px solid #e8ddd4;border-radius:12px;padding:1.4rem;box-shadow:0 4px 20px rgba(192,57,27,.06)}
+.rc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+.rc-title{font-size:.9rem;font-weight:700;color:#1c1209}
+.rc-badge{font-family:'Geist Mono',monospace;font-size:9px;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;padding:3px 8px;border-radius:20px;display:flex;align-items:center;gap:4px}
+.rc-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:#16a34a;animation:pulse 2s infinite;display:block}
+.rc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1.2rem}
+.rc-stat{background:#faf5ef;border:1px solid #e8ddd4;border-radius:8px;padding:.7rem;text-align:center}
+.rc-stat-val{font-family:'Geist Mono',monospace;font-size:1.1rem;font-weight:700;color:#c0391b;line-height:1}
+.rc-stat-label{font-family:'Geist Mono',monospace;font-size:8px;color:#9a8070;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.rc-shap-label{font-family:'Geist Mono',monospace;font-size:9px;color:#9a8070;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem}
+.shap-bars{display:flex;flex-direction:column;gap:.5rem}
+.shap-row{display:flex;align-items:center;gap:.6rem}
+.shap-name{font-size:.82rem;color:#7a6050;width:110px;text-align:right;flex-shrink:0}
+.shap-track{flex:1;height:5px;background:#f0e8e0;border-radius:3px;overflow:hidden}
+.shap-fill{height:100%;border-radius:3px;animation:barGrow .9s ease both}
+.shap-val{font-family:'Geist Mono',monospace;font-size:.82rem;color:#9a8070;width:28px}
+.rc-cost{margin-top:.8rem;display:flex;align-items:center;gap:.4rem}
+.rc-cost-val{font-family:'Geist Mono',monospace;font-size:.95rem;font-weight:700;color:#c0391b;background:rgba(192,57,27,.1);border:1px solid rgba(192,57,27,.2);padding:4px 10px;border-radius:5px}
+.rc-cost-label{font-size:.8rem;color:#9a8070}
+
+/* TRUST STRIP */
+.trust-strip{background:#fff;border-top:1px solid #e8ddd4;border-bottom:1px solid #e8ddd4;padding:0}
+.trust-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tstat{padding:1.4rem 2rem;border-right:1px solid #f0e8e0}
+.tstat:last-child{border-right:none}
+.tstat-val{font-size:1.6rem;font-weight:800;color:#c0391b;line-height:1;margin-bottom:3px;font-family:'Geist Mono',monospace}
+.tstat-label{font-size:.8rem;color:#9a8070;line-height:1.4}
+
+section{padding:4.5rem 2rem;max-width:1100px;margin:0 auto;border-top:1px solid #e8ddd4}
+.sec-label{font-family:'Geist Mono',monospace;font-size:10px;color:#c0391b;letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem;opacity:.8}
+h2{font-size:clamp(1.7rem,3vw,2.5rem);font-weight:800;color:#1c1209;letter-spacing:-.03em;margin:0 0 .8rem;line-height:1.1}
+p{font-size:.93rem;font-weight:300;color:#7a6050;line-height:1.9;margin:0 0 1rem}
+p strong{color:#1c1209;font-weight:600}
+
+/* PROBLEM */
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-top:2rem;align-items:start}
+.problem-items{display:flex;flex-direction:column;gap:.8rem}
+.prob-item{display:grid;grid-template-columns:44px 1fr;gap:1rem;background:#fff;border:1px solid #e8ddd4;border-radius:8px;padding:1.1rem}
+.prob-num{font-size:.82rem;font-weight:700;color:#c0391b;font-family:'Geist Mono',monospace}
+.prob-title{font-size:.92rem;font-weight:700;color:#1c1209;margin-bottom:.3rem}
+.prob-desc{font-size:.83rem;color:#7a6050;line-height:1.6}
+
+/* PIPELINE */
+.pipe-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:.8rem;margin-top:2rem}
+.pipe-step{background:#fff;border:1px solid #e8ddd4;border-radius:8px;padding:1.1rem;position:relative;overflow:hidden;transition:border-color .2s}
+.pipe-step:hover{border-color:rgba(192,57,27,.3)}
+.pipe-step::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#c0391b,transparent)}
+.pipe-step-num{font-family:'Geist Mono',monospace;font-size:9px;color:#c0391b;letter-spacing:.1em;margin-bottom:.5rem;opacity:.7}
+.pipe-step-name{font-size:.9rem;font-weight:700;color:#1c1209;margin-bottom:.3rem}
+.pipe-step-desc{font-size:.8rem;color:#7a6050;line-height:1.5;margin-bottom:.5rem}
+.pipe-step-tech{font-family:'Geist Mono',monospace;font-size:8px;color:#9a8070;letter-spacing:.04em}
+
+/* TABS */
+.tabs{display:flex;gap:.4rem;margin-top:2rem;padding-bottom:.8rem;border-bottom:1px solid #e8ddd4}
+.tab-btn{font-size:13px;font-weight:500;padding:7px 16px;border:1px solid transparent;border-radius:6px;cursor:pointer;background:transparent;color:#7a6050;font-family:'Geist',sans-serif;transition:all .15s}
+.tab-btn:hover{color:#1c1209}
+.tab-btn.active{background:rgba(192,57,27,.08);border-color:rgba(192,57,27,.25);color:#c0391b;font-weight:600}
+.tab-panel{display:none;margin-top:1.5rem}
+.tab-panel.active{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+.tab-content h3{font-size:1.1rem;font-weight:700;color:#1c1209;margin:0 0 .8rem}
+.tab-content ul{padding:0;margin:0 0 1rem;list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.tab-content ul li{font-size:.87rem;color:#7a6050;padding-left:1.4rem;position:relative;line-height:1.7}
+.tab-content ul li::before{content:'—';position:absolute;left:0;color:#c0391b}
+.stat-pills{display:flex;gap:.4rem;flex-wrap:wrap}
+.stat-pill{font-family:'Geist Mono',monospace;font-size:9px;padding:4px 10px;border:1px solid rgba(192,57,27,.25);background:rgba(192,57,27,.06);color:#c0391b;border-radius:3px}
+.viz-box{background:#fff;border:1px solid #e8ddd4;border-radius:8px;padding:1.2rem}
+.viz-label{font-family:'Geist Mono',monospace;font-size:9px;color:#9a8070;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem}
+.histo{display:flex;align-items:flex-end;gap:3px;height:56px;margin-bottom:.6rem}
+.histo-bar{flex:1;border-radius:2px 2px 0 0}
+.histo-labels{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.histo-lbl{font-family:'Geist Mono',monospace;font-size:8px}
+.histo-lbl.green{color:#16a34a}.histo-lbl.orange{color:#c0391b}
+.shap-viz{display:flex;flex-direction:column;gap:.5rem}
+.shap-viz-row{display:flex;align-items:center;gap:.6rem}
+.shap-viz-name{font-family:'Geist Mono',monospace;font-size:9px;color:#9a8070;width:90px;text-align:right;flex-shrink:0}
+.shap-viz-track{flex:1;height:6px;background:#f0e8e0;border-radius:3px;overflow:hidden}
+.shap-viz-val{font-family:'Geist Mono',monospace;font-size:9px;color:#9a8070;width:30px}
+.email-box{background:#faf5ef;border:1px solid #e8ddd4;border-radius:8px;padding:1.1rem}
+.email-label{font-family:'Geist Mono',monospace;font-size:9px;color:#9a8070;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem}
+.email-text{font-size:.87rem;color:#4a3728;line-height:1.75}
+.email-text strong{color:#1c1209}
+.email-text span{color:#c0391b;font-weight:500}
+.email-chips{display:flex;gap:.4rem;margin-top:.6rem;flex-wrap:wrap}
+.echip{font-family:'Geist Mono',monospace;font-size:8px;padding:3px 8px;border:1px solid rgba(192,57,27,.2);background:rgba(192,57,27,.06);color:#c0391b;border-radius:3px}
+
+/* PERFORMANCE */
+.perf-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem}
+.perf-context{font-size:.87rem;color:#7a6050;line-height:1.75}
+.code-chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.8rem}
+.code-chip{font-family:'Geist Mono',monospace;font-size:9px;padding:4px 10px;background:rgba(192,57,27,.08);border:1px solid rgba(192,57,27,.2);color:#c0391b;border-radius:20px}
+.perf-table{background:#fff;border:1px solid #e8ddd4;border-radius:8px;overflow:hidden}
+.perf-row{display:flex;justify-content:space-between;align-items:center;padding:.65rem 1.2rem;border-bottom:1px solid #f5ede4}
+.perf-row:last-child{border-bottom:none}
+.perf-row-head{background:#faf5ef;border-bottom:1px solid #e8ddd4 !important}
+.perf-row span:first-child{font-size:.85rem;color:#7a6050}
+.perf-val{font-family:'Geist Mono',monospace;font-size:.85rem;font-weight:600;color:#c0391b}
+.perf-base{font-family:'Geist Mono',monospace;font-size:.85rem;color:#9a8070}
+
+footer{border-top:1px solid #e8ddd4;padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+footer p{margin:0;font-family:'Geist Mono',monospace;font-size:9px;color:#9a8070;letter-spacing:.04em}
+.foot-links a{font-family:'Geist Mono',monospace;font-size:10px;color:#7a6050;text-decoration:none;margin-left:1.5rem;transition:color .15s}
+.foot-links a:hover{color:#c0391b}
+
+@media(max-width:768px){nav{padding:0 1rem}header{grid-template-columns:1fr;padding:7rem 1rem 3rem}.risk-card{display:none}section{padding:3rem 1rem}.problem-grid,.perf-grid{grid-template-columns:1fr}.tab-panel.active{grid-template-columns:1fr}.pipe-steps{grid-template-columns:1fr 1fr}.trust-inner{grid-template-columns:1fr 1fr}footer{padding:1rem}}
 </style>
-</helmet>
-<div style="font-family:'Hanken Grotesk',system-ui,sans-serif;background:#faf6ee;color:#221d16;line-height:1.6;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased">
+</head>
+<body>
+<nav>
+  <div class="nav-brand">
+    <div class="nav-logo">C</div>
+    <span class="nav-name">ChurnIQ</span>
+  </div>
+  <div class="nav-links">
+    <a href="#system">System</a>
+    <a href="#perf">Performance</a>
+    <a href="#impact">Impact</a>
+    <a href="https://github.com/aasthav1811/ChurnIQ" target="_blank" class="nav-github">GitHub ↗</a>
+  </div>
+</nav>
 
-  <!-- NAV -->
-  <nav style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 44px;background:rgba(250,246,238,0.82);backdrop-filter:blur(14px);border-bottom:1px solid #e7ddca">
-    <div style="display:flex;align-items:center;gap:11px">
-      <div style="width:26px;height:26px;border-radius:7px;background:#be4a26;display:flex;align-items:center;justify-content:center">
-        <div style="width:10px;height:10px;border-radius:50%;border:2.5px solid #faf6ee"></div>
-      </div>
-      <span style="font-weight:800;font-size:1.05rem;letter-spacing:-.02em">ChurnIQ</span>
+<header>
+  <div>
+    <div class="hero-breadcrumb">
+      <span class="bc-tag bc-orange">Retention Intelligence</span>
+      <span class="bc-line"></span>
+      <span class="bc-dim">ML · Decision Systems · 2025</span>
     </div>
-    <div style="display:flex;align-items:center;gap:6px;font-size:.84rem">
-      <a href="#system" style="color:#6f6557;text-decoration:none;padding:7px 13px;border-radius:8px">System</a>
-      <a href="#perf" style="color:#6f6557;text-decoration:none;padding:7px 13px;border-radius:8px">Performance</a>
-      <a href="#impact" style="color:#6f6557;text-decoration:none;padding:7px 13px;border-radius:8px">Impact</a>
-      <a href="https://github.com/aasthav1811/ChurnIQ" target="_blank" rel="noopener" style="margin-left:8px;background:#221d16;color:#faf6ee;text-decoration:none;font-weight:600;padding:8px 16px;border-radius:9px">GitHub ↗</a>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <header style="max-width:1180px;margin:0 auto;padding:70px 44px 40px">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:30px">
-      <span style="font-family:'Geist Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#be4a26">Retention Intelligence</span>
-      <span style="flex:1;height:1px;background:#e2d8c5;max-width:120px"></span>
-      <span style="font-family:'Geist Mono',monospace;font-size:.72rem;color:#9a8f7d">ML · Decision Systems · 2025</span>
-    </div>
-    <div style="display:grid;grid-template-columns:1.35fr 1fr;gap:56px;align-items:end">
-      <div>
-        <h1 style="font-size:clamp(2.7rem,5vw,4.3rem);font-weight:800;line-height:1.02;letter-spacing:-.035em;margin:0 0 22px">Stop losing the customers you didn't know were leaving.</h1>
-        <p style="font-size:1.12rem;color:#5d5446;max-width:520px;margin:0 0 32px;text-wrap:pretty">ChurnIQ scores every account for churn risk, explains <em style="font-style:normal;color:#be4a26;font-weight:600">exactly why</em> with SHAP, finds who's actually saveable with causal uplift, and drafts the retention email — grounded in that customer's real data.</p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a href="#system" style="background:#be4a26;color:#fff;font-weight:700;font-size:.92rem;padding:13px 26px;border-radius:10px;text-decoration:none">Walk the pipeline →</a>
-          <a href="https://github.com/aasthav1811/ChurnIQ" target="_blank" rel="noopener" style="border:1px solid #d8ceba;color:#221d16;font-weight:600;font-size:.92rem;padding:13px 26px;border-radius:10px;text-decoration:none">Read the code</a>
-        </div>
-      </div>
-      <!-- report card -->
-      <div style="position:relative">
-        <div style="background:#fffdf8;border:1px solid #e7ddca;border-radius:16px;padding:22px;box-shadow:0 30px 60px -30px rgba(60,40,20,0.28)">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
-            <span style="font-weight:700;font-size:.86rem">Risk Ledger</span>
-            <span style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#5f7355;background:#eaf0e4;border:1px solid #cdd9c2;padding:3px 9px;border-radius:20px"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#5f7355;margin-right:5px;animation:ciqPulse 2s infinite"></span>scored</span>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:18px">
-            <div style="background:#faf4ea;border:1px solid #ece2cf;border-radius:10px;padding:11px 9px;text-align:center"><div style="font-family:'Geist Mono',monospace;font-size:1.15rem;font-weight:600;color:#be4a26">26.5%</div><div style="font-size:.6rem;color:#9a8f7d;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">churn rate</div></div>
-            <div style="background:#faf4ea;border:1px solid #ece2cf;border-radius:10px;padding:11px 9px;text-align:center"><div style="font-family:'Geist Mono',monospace;font-size:1.15rem;font-weight:600;color:#b07d2a">0.852</div><div style="font-size:.6rem;color:#9a8f7d;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">ROC-AUC</div></div>
-            <div style="background:#faf4ea;border:1px solid #ece2cf;border-radius:10px;padding:11px 9px;text-align:center"><div style="font-family:'Geist Mono',monospace;font-size:1.15rem;font-weight:600;color:#5f7355">7,043</div><div style="font-size:.6rem;color:#9a8f7d;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">accounts</div></div>
-          </div>
-          <div style="font-family:'Geist Mono',monospace;font-size:.62rem;color:#9a8f7d;text-transform:uppercase;letter-spacing:.07em;margin-bottom:11px">Top churn drivers · SHAP</div>
-          <div style="display:flex;flex-direction:column;gap:9px">
-            <div style="display:flex;align-items:center;gap:9px"><span style="font-size:.72rem;color:#6f6557;width:96px;text-align:right;flex-shrink:0">Month-to-month</span><div style="flex:1;height:7px;background:#efe7d8;border-radius:4px;overflow:hidden"><div style="height:100%;width:84%;background:#be4a26;border-radius:4px;transform-origin:left;animation:ciqBar 1s ease .3s both"></div></div><span style="font-family:'Geist Mono',monospace;font-size:.64rem;color:#9a8f7d;width:24px">.84</span></div>
-            <div style="display:flex;align-items:center;gap:9px"><span style="font-size:.72rem;color:#6f6557;width:96px;text-align:right;flex-shrink:0">Tenure</span><div style="flex:1;height:7px;background:#efe7d8;border-radius:4px;overflow:hidden"><div style="height:100%;width:71%;background:#cf7038;border-radius:4px;transform-origin:left;animation:ciqBar 1s ease .4s both"></div></div><span style="font-family:'Geist Mono',monospace;font-size:.64rem;color:#9a8f7d;width:24px">.71</span></div>
-            <div style="display:flex;align-items:center;gap:9px"><span style="font-size:.72rem;color:#6f6557;width:96px;text-align:right;flex-shrink:0">Monthly charges</span><div style="flex:1;height:7px;background:#efe7d8;border-radius:4px;overflow:hidden"><div style="height:100%;width:43%;background:#b07d2a;border-radius:4px;transform-origin:left;animation:ciqBar 1s ease .5s both"></div></div><span style="font-family:'Geist Mono',monospace;font-size:.64rem;color:#9a8f7d;width:24px">.43</span></div>
-            <div style="display:flex;align-items:center;gap:9px"><span style="font-size:.72rem;color:#6f6557;width:96px;text-align:right;flex-shrink:0">Fiber optic</span><div style="flex:1;height:7px;background:#efe7d8;border-radius:4px;overflow:hidden"><div style="height:100%;width:31%;background:#5f7355;border-radius:4px;transform-origin:left;animation:ciqBar 1s ease .6s both"></div></div><span style="font-family:'Geist Mono',monospace;font-size:.64rem;color:#9a8f7d;width:24px">.31</span></div>
-          </div>
-        </div>
-        <div style="position:absolute;bottom:-18px;left:-26px;background:#221d16;color:#faf6ee;border-radius:11px;padding:9px 13px;font-size:.72rem;display:flex;align-items:center;gap:8px;box-shadow:0 14px 30px -12px rgba(60,40,20,0.5);animation:ciqFloat 4s ease-in-out infinite">
-          <span style="font-family:'Geist Mono',monospace;color:#e89b6f">&lt;$0.001</span><span style="color:#9a8f7d">per score</span>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- TRUST STRIP -->
-  <div style="border-top:1px solid #e7ddca;border-bottom:1px solid #e7ddca;background:#f4ede0;margin-top:30px">
-    <div style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)">
-      <div style="padding:26px 30px;border-right:1px solid #e7ddca"><div data-count="852" data-suffix="" style="font-size:2rem;font-weight:800;letter-spacing:-.03em;color:#be4a26;font-variant-numeric:tabular-nums">0.852</div><div style="font-size:.8rem;color:#6f6557;margin-top:2px">ROC-AUC on held-out test set</div></div>
-      <div style="padding:26px 30px;border-right:1px solid #e7ddca"><div style="font-size:2rem;font-weight:800;letter-spacing:-.03em;color:#221d16;font-variant-numeric:tabular-nums">0.71</div><div style="font-size:.8rem;color:#6f6557;margin-top:2px">F1 on the churn class</div></div>
-      <div style="padding:26px 30px;border-right:1px solid #e7ddca"><div style="font-size:2rem;font-weight:800;letter-spacing:-.03em;color:#221d16;font-variant-numeric:tabular-nums">0.034</div><div style="font-size:.8rem;color:#6f6557;margin-top:2px">Expected calibration error</div></div>
-      <div style="padding:26px 30px"><div style="font-size:2rem;font-weight:800;letter-spacing:-.03em;color:#5f7355;font-variant-numeric:tabular-nums">5</div><div style="font-size:.8rem;color:#6f6557;margin-top:2px">stages, raw data → sent email</div></div>
+    <h1>Stop losing the customers you didn't know were <em>leaving.</em></h1>
+    <p class="hero-desc">ChurnIQ scores every account for churn risk, explains <em>exactly why</em> with SHAP, finds who's actually saveable with causal uplift, and drafts the retention email — grounded in that customer's real data.</p>
+    <div class="hero-btns">
+      <a href="https://churn-jyehwwl25-aastha-v-projects.vercel.app/" target="_blank" class="btn-orange">↗ Live Demo</a>
+      <a href="#system" class="btn-outline">Walk the pipeline →</a>
+      <a href="https://github.com/aasthav1811/ChurnIQ" target="_blank" class="btn-outline">Read the code</a>
     </div>
   </div>
-
-  <!-- PROBLEM -->
-  <section style="max-width:1180px;margin:0 auto;padding:84px 44px">
-    <div style="display:grid;grid-template-columns:1fr 1.1fr;gap:60px;align-items:start">
-      <div>
-        <span style="font-family:'Geist Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#be4a26">01 — The problem</span>
-        <h2 style="font-size:clamp(1.9rem,3.2vw,2.7rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin:14px 0 16px">Revenue leaves quietly. Most teams only find out at cancel.</h2>
-        <p style="font-size:1.02rem;color:#5d5446;max-width:440px;text-wrap:pretty">SaaS businesses shed 5–7% of accounts a month. By the time a customer hits "cancel," the window to intervene is already closed — and the team never knew which lever would have changed their mind.</p>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div style="background:#fffdf8;border:1px solid #e7ddca;border-radius:13px;padding:20px 22px;display:flex;gap:15px">
-          <div style="font-family:'Geist Mono',monospace;color:#be4a26;font-weight:600;font-size:.8rem;padding-top:1px">No.1</div>
-          <div><div style="font-weight:700;font-size:.96rem;margin-bottom:3px">No visibility into who will leave</div><div style="font-size:.86rem;color:#6f6557">Churn shows up in a dashboard after it happens. There's no forward signal, no ranking, no time to act.</div></div>
-        </div>
-        <div style="background:#fffdf8;border:1px solid #e7ddca;border-radius:13px;padding:20px 22px;display:flex;gap:15px">
-          <div style="font-family:'Geist Mono',monospace;color:#be4a26;font-weight:600;font-size:.8rem;padding-top:1px">No.2</div>
-          <div><div style="font-weight:700;font-size:.96rem;margin-bottom:3px">No explanation for why</div><div style="font-size:.86rem;color:#6f6557">Even with a risk score, every at-risk account looks identical. Teams can't tell a pricing problem from an onboarding one.</div></div>
-        </div>
-        <div style="background:#fffdf8;border:1px solid #e7ddca;border-radius:13px;padding:20px 22px;display:flex;gap:15px">
-          <div style="font-family:'Geist Mono',monospace;color:#be4a26;font-weight:600;font-size:.8rem;padding-top:1px">No.3</div>
-          <div><div style="font-weight:700;font-size:.96rem;margin-bottom:3px">No personalized action</div><div style="font-size:.86rem;color:#6f6557">"We miss you" emails don't work. Worse, discounts get burned on customers who were never going to leave.</div></div>
-        </div>
-      </div>
+  <div class="risk-card">
+    <div class="rc-header">
+      <span class="rc-title">Risk Ledger</span>
+      <span class="rc-badge">scored</span>
     </div>
-  </section>
-
-  <!-- SYSTEM / PIPELINE -->
-  <section id="system" style="background:#f4ede0;border-top:1px solid #e7ddca;border-bottom:1px solid #e7ddca">
-    <div style="max-width:1180px;margin:0 auto;padding:84px 44px">
-      <div style="max-width:620px;margin-bottom:48px">
-        <span style="font-family:'Geist Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#be4a26">02 — The system</span>
-        <h2 style="font-size:clamp(1.9rem,3.2vw,2.7rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin:14px 0 14px">Five stages. One decision.</h2>
-        <p style="font-size:1.02rem;color:#5d5446;text-wrap:pretty">From a raw customer row to a ready-to-send retention email — every step explainable, every step logged.</p>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative">
-        <div style="padding:0 18px 0 0;border-right:1px dashed #d6cbb6"><div style="font-family:'Geist Mono',monospace;font-size:.7rem;color:#be4a26;margin-bottom:12px">01</div><div style="font-weight:700;font-size:1rem;margin-bottom:6px">Ingest</div><div style="font-size:.82rem;color:#6f6557;margin-bottom:12px">Clean the row, engineer 21 behavioral + billing features.</div><div style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#9a8f7d">pandas · sklearn</div></div>
-        <div style="padding:0 18px;border-right:1px dashed #d6cbb6"><div style="font-family:'Geist Mono',monospace;font-size:.7rem;color:#be4a26;margin-bottom:12px">02</div><div style="font-weight:700;font-size:1rem;margin-bottom:6px">Predict</div><div style="font-size:.82rem;color:#6f6557;margin-bottom:12px">XGBoost scores churn probability; SMOTE fixes the imbalance.</div><div style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#9a8f7d">xgboost · SMOTE</div></div>
-        <div style="padding:0 18px;border-right:1px dashed #d6cbb6"><div style="font-family:'Geist Mono',monospace;font-size:.7rem;color:#be4a26;margin-bottom:12px">03</div><div style="font-weight:700;font-size:1rem;margin-bottom:6px">Explain</div><div style="font-size:.82rem;color:#6f6557;margin-bottom:12px">SHAP TreeExplainer attributes the score, per customer.</div><div style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#9a8f7d">shap · TreeExplainer</div></div>
-        <div style="padding:0 18px;border-right:1px dashed #d6cbb6"><div style="font-family:'Geist Mono',monospace;font-size:.7rem;color:#be4a26;margin-bottom:12px">04</div><div style="font-weight:700;font-size:1rem;margin-bottom:6px">Target</div><div style="font-size:.82rem;color:#6f6557;margin-bottom:12px">A T-learner estimates uplift — who actually flips if contacted.</div><div style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#9a8f7d">T-learner · causal</div></div>
-        <div style="padding:0 0 0 18px"><div style="font-family:'Geist Mono',monospace;font-size:.7rem;color:#be4a26;margin-bottom:12px">05</div><div style="font-weight:700;font-size:1rem;margin-bottom:6px">Act</div><div style="font-size:.82rem;color:#6f6557;margin-bottom:12px">Groq drafts a personalized email grounded in the SHAP drivers.</div><div style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#9a8f7d">groq · FastAPI</div></div>
-      </div>
+    <div class="rc-stats">
+      <div class="rc-stat"><div class="rc-stat-val">26.5%</div><div class="rc-stat-label">Churn Rate</div></div>
+      <div class="rc-stat"><div class="rc-stat-val">0.852</div><div class="rc-stat-label">ROC-AUC</div></div>
+      <div class="rc-stat"><div class="rc-stat-val">7,043</div><div class="rc-stat-label">Accounts</div></div>
     </div>
-  </section>
-
-  <!-- CAPABILITIES (tabbed) -->
-  <section style="max-width:1180px;margin:0 auto;padding:84px 44px">
-    <span style="font-family:'Geist Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#be4a26">03 — Core capabilities</span>
-    <h2 style="font-size:clamp(1.9rem,3.2vw,2.7rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin:14px 0 26px">Three systems, one outcome.</h2>
-    <div style="display:inline-flex;gap:4px;background:#f1e9da;border:1px solid #e3d9c5;border-radius:12px;padding:4px;margin-bottom:34px">
-      <button onclick="{{ tabPredict }}" style="{{ stylePredict }}">Prediction</button>
-      <button onclick="{{ tabExplain }}" style="{{ styleExplain }}">SHAP explainability</button>
-      <button onclick="{{ tabAgent }}" style="{{ styleAgent }}">Retention agent</button>
+    <div class="rc-shap-label">Top churn drivers · SHAP</div>
+    <div class="shap-bars">
+      <div class="shap-row"><span class="shap-name">Month-to-month</span><div class="shap-track"><div class="shap-fill" style="--w:84%;width:84%;background:#c0391b"></div></div><span class="shap-val">.84</span></div>
+      <div class="shap-row"><span class="shap-name">Tenure</span><div class="shap-track"><div class="shap-fill" style="--w:71%;width:71%;background:#cc5533"></div></div><span class="shap-val">.71</span></div>
+      <div class="shap-row"><span class="shap-name">Monthly charges</span><div class="shap-track"><div class="shap-fill" style="--w:43%;width:43%;background:#d97050"></div></div><span class="shap-val">.43</span></div>
+      <div class="shap-row"><span class="shap-name">Fiber optic</span><div class="shap-track"><div class="shap-fill" style="--w:31%;width:31%;background:#e08868"></div></div><span class="shap-val">.31</span></div>
     </div>
+    <div class="rc-cost"><span class="rc-cost-val">&lt;$0.001</span><span class="rc-cost-label">per score</span></div>
+  </div>
+</header>
 
-    <sc-if value="{{ showPredict }}" hint-placeholder-val="{{ true }}">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center">
-        <div>
-          <h3 style="font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin:0 0 12px">Predict who leaves before they do</h3>
-          <p style="font-size:.96rem;color:#5d5446;margin:0 0 18px;text-wrap:pretty">An XGBoost classifier on 21 engineered features returns a calibrated churn probability for every active account. SMOTE resolves the 26.5% minority-class imbalance that makes naive models predict "stays" for everyone.</p>
-          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px">
-            <li style="display:flex;gap:10px;font-size:.88rem;color:#5d5446"><span style="color:#be4a26;font-weight:700">—</span>21 behavioral + billing features from raw data</li>
-            <li style="display:flex;gap:10px;font-size:.88rem;color:#5d5446"><span style="color:#be4a26;font-weight:700">—</span>Risk bands: low / medium / high, configurable thresholds</li>
-            <li style="display:flex;gap:10px;font-size:.88rem;color:#5d5446"><span style="color:#be4a26;font-weight:700">—</span>Beats logistic regression & random forest on AUC and calibration</li>
-          </ul>
-          <div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap">
-            <span style="font-family:'Geist Mono',monospace;font-size:.74rem;color:#be4a26;background:#f6e4da;border:1px solid #e8c8b8;border-radius:20px;padding:4px 11px">AUC 0.852</span>
-            <span style="font-family:'Geist Mono',monospace;font-size:.74rem;color:#be4a26;background:#f6e4da;border:1px solid #e8c8b8;border-radius:20px;padding:4px 11px">F1 0.71</span>
-            <span style="font-family:'Geist Mono',monospace;font-size:.74rem;color:#be4a26;background:#f6e4da;border:1px solid #e8c8b8;border-radius:20px;padding:4px 11px">CV 0.849 ± 0.011</span>
-          </div>
-        </div>
-        <div style="background:#fffdf8;border:1px solid #e7ddca;border-radius:15px;padding:24px">
-          <div style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#9a8f7d;text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px">Churn probability distribution</div>
-          <div style="display:flex;align-items:flex-end;gap:5px;height:130px;margin-bottom:14px">{{ histo }}</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
-            <div style="background:#eaf0e4;border:1px solid #cdd9c2;border-radius:10px;padding:13px"><div style="font-family:'Geist Mono',monospace;font-size:1.3rem;font-weight:600;color:#5f7355">73.5%</div><div style="font-size:.7rem;color:#7d8b71;margin-top:2px">Healthy accounts</div></div>
-            <div style="background:#f6e4da;border:1px solid #e8c8b8;border-radius:10px;padding:13px"><div style="font-family:'Geist Mono',monospace;font-size:1.3rem;font-weight:600;color:#be4a26">26.5%</div><div style="font-size:.7rem;color:#b07a62;margin-top:2px">Predicted to churn</div></div>
-          </div>
-        </div>
-      </div>
-    </sc-if>
-
-    <sc-if value="{{ showExplain }}" hint-placeholder-val="{{ false }}">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center">
-        <div>
-          <h3 style="font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin:0 0 12px">Know exactly why each account is at risk</h3>
-          <p style="font-size:.96rem;color:#5d5446;margin:0 0 18px;text-wrap:pretty">SHAP TreeExplainer produces per-customer attributions — not just global importance. Every score carries a ranked list of what pushed it up (warm) or held it down (cool), readable by an engineer or a CSM, and fed straight into the email prompt.</p>
-          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px">
-            <li style="display:flex;gap:10px;font-size:.88rem;color:#5d5446"><span style="color:#be4a26;font-weight:700">—</span>Local explanations per customer, exposed in UI and API</li>
-            <li style="display:flex;gap:10px;font-size:.88rem;color:#5d5446"><span style="color:#be4a26;font-weight:700">—</span>Warm bars raise risk, cool bars protect against it</li>
-            <li style="display:flex;gap:10px;font-size:.88rem;color:#5d5446"><span style="color:#be4a26;font-weight:700">—</span>Drives the LLM so emails reference real, specific reasons</li>
-          </ul>
-        </div>
-        <div style="background:#fffdf8;border:1px solid #e7ddca;border-radius:15px;padding:24px">
-          <div style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#9a8f7d;text-transform:uppercase;letter-spacing:.07em;margin-bottom:18px">Customer #1234 — 84% risk</div>
-          <div style="display:flex;flex-direction:column;gap:11px">
-            <div style="display:flex;align-items:center;gap:9px"><span style="font-family:'Geist Mono',monospace;font-size:.68rem;color:#6f6557;width:120px;text-align:right;flex-shrink:0">MonthlyCharges</span><div style="flex:1;height:17px;background:#efe7d8;border-radius:4px;overflow:hidden"><div style="height:100%;width:80%;background:#be4a26;border-radius:4px;transform-origin:left;animation:ciqBar .8s ease both"></div></div><span style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#be4a26;width:34px">+.84</span></div>
-            <div style="display:flex;align-items:center;gap:9px"><span style="font-family:'Geist Mono',monospace;font-size:.68rem;color:#6f6557;width:120px;text-align:right;flex-shrink:0">tenure</span><div style="flex:1;height:17px;background:#efe7d8;border-radius:4px;overflow:hidden"><div style="height:100%;width:66%;background:#cf7038;border-radius:4px;transform-origin:left;animation:ciqBar .8s ease .05s both"></div></div><span style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#be4a26;width:34px">+.71</span></div>
-            <div style="display:flex;align-items:center;gap:9px"><span style="font-family:'Geist Mono',monospace;font-size:.68rem;color:#6f6557;width:120px;text-align:right;flex-shrink:0">Contract_M2M</span><div style="flex:1;height:17px;background:#efe7d8;border-radius:4px;overflow:hidden"><div style="height:100%;width:50%;background:#d98b54;border-radius:4px;transform-origin:left;animation:ciqBar .8s ease .1s both"></div></div><span style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#be4a26;width:34px">+.43</span></div>
-            <div style="display:flex;align-items:center;gap:9px"><span style="font-family:'Geist Mono',monospace;font-size:.68rem;color:#6f6557;width:120px;text-align:right;flex-shrink:0">OnlineSecurity</span><div style="flex:1;height:17px;background:#efe7d8;border-radius:4px;overflow:hidden"><div style="height:100%;width:32%;background:#5f7355;border-radius:4px;transform-origin:left;animation:ciqBar .8s ease .15s both"></div></div><span style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#5f7355;width:34px">−.27</span></div>
-            <div style="display:flex;align-items:center;gap:9px"><span style="font-family:'Geist Mono',monospace;font-size:.68rem;color:#6f6557;width:120px;text-align:right;flex-shrink:0">TechSupport</span><div style="flex:1;height:17px;background:#efe7d8;border-radius:4px;overflow:hidden"><div style="height:100%;width:22%;background:#7d8b71;border-radius:4px;transform-origin:left;animation:ciqBar .8s ease .2s both"></div></div><span style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#5f7355;width:34px">−.18</span></div>
-          </div>
-        </div>
-      </div>
-    </sc-if>
-
-    <sc-if value="{{ showAgent }}" hint-placeholder-val="{{ false }}">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center">
-        <div>
-          <h3 style="font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin:0 0 12px">Personalized retention, at scale</h3>
-          <p style="font-size:.96rem;color:#5d5446;margin:0 0 18px;text-wrap:pretty">A T-learner first filters to the accounts a touch will actually move. A rule-based selector picks the intervention. Then Groq (Llama 3.1) drafts a ~120-word email grounded in that customer's SHAP drivers — handed back through FastAPI for any CRM.</p>
-          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px">
-            <li style="display:flex;gap:10px;font-size:.88rem;color:#5d5446"><span style="color:#be4a26;font-weight:700">—</span>Causal uplift filters to true intervention candidates</li>
-            <li style="display:flex;gap:10px;font-size:.88rem;color:#5d5446"><span style="color:#be4a26;font-weight:700">—</span>Intervention chosen by segment + risk band</li>
-            <li style="display:flex;gap:10px;font-size:.88rem;color:#5d5446"><span style="color:#be4a26;font-weight:700">—</span>POST /agent → plugs into HubSpot, Salesforce, anything</li>
-          </ul>
-        </div>
-        <div style="background:#fffdf8;border:1px solid #e7ddca;border-radius:15px;padding:24px">
-          <div style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#9a8f7d;text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px">Draft · grounded in SHAP</div>
-          <div style="background:#faf4ea;border:1px solid #ece2cf;border-left:3px solid #be4a26;border-radius:10px;padding:17px;font-size:.86rem;color:#5d5446;line-height:1.75">
-            <strong style="color:#221d16">Subject: We'd love to keep you, Alex</strong><br><br>
-            You've been with us two months — and fiber plans can take adjusting to. We want to make sure you're getting the value you expected.<br>
-            <span style="display:block;margin:11px 0;color:#be4a26">As a thank-you, here's 20% off for your next 6 months.</span>
-            Reply here or grab a quick call — we're glad you're here.
-          </div>
-          <div style="display:flex;gap:7px;margin-top:13px;flex-wrap:wrap">
-            <span style="font-family:'Geist Mono',monospace;font-size:.7rem;color:#6f6557;background:#f1e9da;border:1px solid #e3d9c5;border-radius:7px;padding:4px 9px">SHAP → reasons</span>
-            <span style="font-family:'Geist Mono',monospace;font-size:.7rem;color:#6f6557;background:#f1e9da;border:1px solid #e3d9c5;border-radius:7px;padding:4px 9px">uplift → who</span>
-            <span style="font-family:'Geist Mono',monospace;font-size:.7rem;color:#6f6557;background:#f1e9da;border:1px solid #e3d9c5;border-radius:7px;padding:4px 9px">Groq → words</span>
-          </div>
-        </div>
-      </div>
-    </sc-if>
-  </section>
-
-  <!-- PERFORMANCE -->
-  <section id="perf" style="background:#221d16;color:#f3ece0">
-    <div style="max-width:1180px;margin:0 auto;padding:84px 44px">
-      <div style="display:grid;grid-template-columns:1fr 1.15fr;gap:60px;align-items:start">
-        <div>
-          <span style="font-family:'Geist Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#e89b6f">04 — Measured performance</span>
-          <h2 style="font-size:clamp(1.9rem,3.2vw,2.7rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin:14px 0 16px;color:#fff">The numbers are real, and calibrated.</h2>
-          <p style="font-size:1rem;color:#b9ac99;max-width:420px;text-wrap:pretty">Evaluated on a held-out test split of the Telco churn dataset (7,043 customers). Reported against a logistic-regression baseline. An ECE of 0.034 means the probabilities can be trusted for business thresholds — not just ranking.</p>
-          <div style="display:flex;gap:8px;margin-top:22px;flex-wrap:wrap">
-            <span style="font-family:'Geist Mono',monospace;font-size:.74rem;color:#e89b6f;background:rgba(232,155,111,0.12);border:1px solid rgba(232,155,111,0.3);border-radius:20px;padding:5px 12px">Brier 0.142</span>
-            <span style="font-family:'Geist Mono',monospace;font-size:.74rem;color:#e89b6f;background:rgba(232,155,111,0.12);border:1px solid rgba(232,155,111,0.3);border-radius:20px;padding:5px 12px">PR-AUC 0.692</span>
-            <span style="font-family:'Geist Mono',monospace;font-size:.74rem;color:#e89b6f;background:rgba(232,155,111,0.12);border:1px solid rgba(232,155,111,0.3);border-radius:20px;padding:5px 12px">P@decile 0.78</span>
-          </div>
-        </div>
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:15px;padding:8px 26px 18px">
-          <table style="width:100%;border-collapse:collapse;font-size:.9rem">
-            <thead><tr>
-              <th style="text-align:left;font-family:'Geist Mono',monospace;font-weight:500;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:#8c8170;padding:16px 8px 12px">Metric</th>
-              <th style="text-align:right;font-family:'Geist Mono',monospace;font-weight:500;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:#8c8170;padding:16px 8px 12px">ChurnIQ</th>
-              <th style="text-align:right;font-family:'Geist Mono',monospace;font-weight:500;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:#8c8170;padding:16px 8px 12px">Baseline</th>
-            </tr></thead>
-            <tbody>
-              <tr><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);color:#f3ece0">ROC-AUC</td><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);text-align:right;font-family:'Geist Mono',monospace;color:#e89b6f;font-weight:600">0.852</td><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);text-align:right;font-family:'Geist Mono',monospace;color:#8c8170">0.821</td></tr>
-              <tr><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);color:#f3ece0">PR-AUC</td><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);text-align:right;font-family:'Geist Mono',monospace;color:#e89b6f;font-weight:600">0.692</td><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);text-align:right;font-family:'Geist Mono',monospace;color:#8c8170">0.638</td></tr>
-              <tr><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);color:#f3ece0">F1 (churn class)</td><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);text-align:right;font-family:'Geist Mono',monospace;color:#e89b6f;font-weight:600">0.71</td><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);text-align:right;font-family:'Geist Mono',monospace;color:#8c8170">0.65</td></tr>
-              <tr><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);color:#f3ece0">Recall (churn class)</td><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);text-align:right;font-family:'Geist Mono',monospace;color:#e89b6f;font-weight:600">0.78</td><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);text-align:right;font-family:'Geist Mono',monospace;color:#8c8170">0.71</td></tr>
-              <tr><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);color:#f3ece0">Brier score</td><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);text-align:right;font-family:'Geist Mono',monospace;color:#e89b6f;font-weight:600">0.142</td><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);text-align:right;font-family:'Geist Mono',monospace;color:#8c8170">0.165</td></tr>
-              <tr><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);color:#f3ece0">5-fold CV AUC</td><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);text-align:right;font-family:'Geist Mono',monospace;color:#e89b6f;font-weight:600">0.849 ±.011</td><td style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.07);text-align:right;font-family:'Geist Mono',monospace;color:#8c8170">—</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- IMPACT -->
-  <section id="impact" style="max-width:1180px;margin:0 auto;padding:84px 44px">
-    <div style="display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:start">
-      <div>
-        <span style="font-family:'Geist Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#be4a26">05 — Business case</span>
-        <h2 style="font-size:clamp(1.9rem,3.2vw,2.7rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin:14px 0 14px">What it's worth to ship this.</h2>
-        <p style="font-size:1.02rem;color:#5d5446;max-width:430px;text-wrap:pretty">Modeled on a 50,000-customer mid-market SaaS. These are projected outcomes from the model's measured lift — not booked revenue — but the payback math is hard to argue with.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px">
-          <div style="background:#fffdf8;border:1px solid #e7ddca;border-radius:13px;padding:20px"><div style="font-size:1.7rem;font-weight:800;letter-spacing:-.03em;color:#be4a26">$2.1M</div><div style="font-size:.78rem;color:#6f6557;margin-top:4px">projected annual savings · 31% churn reduction</div></div>
-          <div style="background:#fffdf8;border:1px solid #e7ddca;border-radius:13px;padding:20px"><div style="font-size:1.7rem;font-weight:800;letter-spacing:-.03em;color:#5f7355">30s</div><div style="font-size:.78rem;color:#6f6557;margin-top:4px">to draft a retention email vs ~5 days</div></div>
-          <div style="background:#fffdf8;border:1px solid #e7ddca;border-radius:13px;padding:20px"><div style="font-size:1.7rem;font-weight:800;letter-spacing:-.03em;color:#b07d2a">100%</div><div style="font-size:.78rem;color:#6f6557;margin-top:4px">account coverage, up from ~8% manual</div></div>
-          <div style="background:#fffdf8;border:1px solid #e7ddca;border-radius:13px;padding:20px"><div style="font-size:1.7rem;font-weight:800;letter-spacing:-.03em;color:#221d16">3.2×</div><div style="font-size:.78rem;color:#6f6557;margin-top:4px">better targeting vs random outreach</div></div>
-        </div>
-      </div>
-      <div style="background:#f4ede0;border:1px solid #e7ddca;border-radius:15px;padding:26px">
-        <div style="font-family:'Geist Mono',monospace;font-size:.66rem;color:#9a8f7d;text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px">Before → after <span style="color:#bcae9b">· modeled</span></div>
-        <div style="display:flex;flex-direction:column">
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #e2d8c5"><span style="font-size:.9rem;color:#221d16;font-weight:500">Monthly churn rate</span><span style="font-size:.9rem"><span style="color:#9a8f7d;font-family:'Geist Mono',monospace">5.5%</span> <span style="color:#bcae9b">→</span> <span style="color:#5f7355;font-family:'Geist Mono',monospace;font-weight:600">3.8%</span></span></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #e2d8c5"><span style="font-size:.9rem;color:#221d16;font-weight:500">CSM coverage</span><span style="font-size:.9rem"><span style="color:#9a8f7d;font-family:'Geist Mono',monospace">8%</span> <span style="color:#bcae9b">→</span> <span style="color:#5f7355;font-family:'Geist Mono',monospace;font-weight:600">100%</span></span></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #e2d8c5"><span style="font-size:.9rem;color:#221d16;font-weight:500">Email turnaround</span><span style="font-size:.9rem"><span style="color:#9a8f7d;font-family:'Geist Mono',monospace">5 days</span> <span style="color:#bcae9b">→</span> <span style="color:#5f7355;font-family:'Geist Mono',monospace;font-weight:600">30 sec</span></span></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0"><span style="font-size:.9rem;color:#221d16;font-weight:500">Targeting</span><span style="font-size:.9rem"><span style="color:#9a8f7d;font-family:'Geist Mono',monospace">gut feel</span> <span style="color:#bcae9b">→</span> <span style="color:#5f7355;font-family:'Geist Mono',monospace;font-weight:600">uplift-ranked</span></span></div>
-        </div>
-        <div style="margin-top:18px;background:#f6e4da;border:1px solid #e8c8b8;border-radius:10px;padding:13px 15px;font-size:.84rem;color:#5d5446"><strong style="color:#be4a26">Payback:</strong> ~$8K build + $150/mo API against $2.1M modeled savings — under two weeks.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA / FOOTER -->
-  <footer style="background:#f4ede0;border-top:1px solid #e7ddca">
-    <div style="max-width:1180px;margin:0 auto;padding:64px 44px 30px;text-align:center">
-      <h2 style="font-size:clamp(1.7rem,3vw,2.4rem);font-weight:800;letter-spacing:-.03em;margin:0 auto 14px;max-width:560px">Every file is documented. Read the whole system.</h2>
-      <p style="color:#6f6557;margin:0 0 28px">Architecture, evaluation report, business case, and a demo script — all in the repo.</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <a href="https://github.com/aasthav1811/ChurnIQ" target="_blank" rel="noopener" style="background:#be4a26;color:#fff;font-weight:700;font-size:.92rem;padding:13px 28px;border-radius:10px;text-decoration:none">View on GitHub →</a>
-        <a href="index.dc.html" style="border:1px solid #d8ceba;color:#221d16;font-weight:600;font-size:.92rem;padding:13px 28px;border-radius:10px;text-decoration:none">All projects</a>
-      </div>
-      <div style="margin-top:48px;padding-top:24px;border-top:1px solid #e2d8c5;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
-        <span style="font-size:.82rem;color:#9a8f7d"><strong style="color:#6f6557;font-weight:700">ChurnIQ</strong> — Churn prediction & retention agent</span>
-        <div style="display:flex;gap:7px;flex-wrap:wrap">
-          <span style="font-family:'Geist Mono',monospace;font-size:.7rem;color:#9a8f7d;background:#fffdf8;border:1px solid #e7ddca;border-radius:20px;padding:4px 11px">XGBoost</span>
-          <span style="font-family:'Geist Mono',monospace;font-size:.7rem;color:#9a8f7d;background:#fffdf8;border:1px solid #e7ddca;border-radius:20px;padding:4px 11px">SHAP</span>
-          <span style="font-family:'Geist Mono',monospace;font-size:.7rem;color:#9a8f7d;background:#fffdf8;border:1px solid #e7ddca;border-radius:20px;padding:4px 11px">Causal uplift</span>
-          <span style="font-family:'Geist Mono',monospace;font-size:.7rem;color:#9a8f7d;background:#fffdf8;border:1px solid #e7ddca;border-radius:20px;padding:4px 11px">Groq</span>
-          <span style="font-family:'Geist Mono',monospace;font-size:.7rem;color:#9a8f7d;background:#fffdf8;border:1px solid #e7ddca;border-radius:20px;padding:4px 11px">FastAPI</span>
-        </div>
-      </div>
-    </div>
-  </footer>
+<div class="trust-strip">
+  <div class="trust-inner">
+    <div class="tstat"><div class="tstat-val">0.829</div><div class="tstat-label">ROC-AUC on held-out test set</div></div>
+    <div class="tstat"><div class="tstat-val">0.71</div><div class="tstat-label">F1 on the churn class</div></div>
+    <div class="tstat"><div class="tstat-val">0.034</div><div class="tstat-label">Expected calibration error</div></div>
+    <div class="tstat"><div class="tstat-val" style="color:#1c1209">5</div><div class="tstat-label">stages, raw data → sent email</div></div>
+  </div>
 </div>
-</x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic {
-  state = { tab: 'predict' };
 
-  renderVals() {
-    const tab = this.state.tab;
-    const tabBase = "font-family:'Hanken Grotesk',sans-serif;font-size:.86rem;font-weight:600;padding:9px 18px;border-radius:9px;border:none;cursor:pointer;transition:all .18s;";
-    const on = tabBase + "background:#be4a26;color:#fff;";
-    const off = tabBase + "background:transparent;color:#6f6557;";
+<section>
+  <div class="sec-label">01 — The problem</div>
+  <h2>Revenue leaves quietly. Most teams only find out at cancel.</h2>
+  <div class="problem-grid">
+    <p>SaaS businesses shed 5–7% of accounts a month. By the time a customer hits "cancel," the window to intervene is already closed — and the team never knew which lever would have changed their mind.</p>
+    <div class="problem-items">
+      <div class="prob-item"><div class="prob-num">No.1</div><div><div class="prob-title">No visibility into who will leave</div><div class="prob-desc">Churn shows up in a dashboard after it happens. There's no forward signal, no ranking, no time to act.</div></div></div>
+      <div class="prob-item"><div class="prob-num">No.2</div><div><div class="prob-title">No explanation for why</div><div class="prob-desc">Even with a risk score, every at-risk account looks identical. Teams can't tell a pricing problem from an onboarding one.</div></div></div>
+      <div class="prob-item"><div class="prob-num">No.3</div><div><div class="prob-title">No personalized action</div><div class="prob-desc">"We miss you" emails don't work. Worse, discounts get burned on customers who were never going to leave.</div></div></div>
+    </div>
+  </div>
+</section>
 
-    // histogram bars for the prediction panel
-    const hist = [20,40,72,100,86,60,44,34,40,52,48,40,60,84,80,66,52,40,28,20];
-    const colOf = (i) => i < 6 ? '#5f7355' : i < 11 ? '#b07d2a' : '#be4a26';
-    const histo = React.createElement('div', { style:{ display:'flex', alignItems:'flex-end', gap:'5px', height:'100%', width:'100%' } },
-      hist.map((h,i) => React.createElement('div', { key:i, style:{
-        flex:1, height: h + '%', background: colOf(i), opacity:.82,
-        borderRadius:'3px 3px 0 0', transformOrigin:'bottom',
-        animation:`ciqBar .8s ease ${0.2 + i*0.025}s both`
-      }})));
+<section id="system">
+  <div class="sec-label">02 — The system</div>
+  <h2>Five stages. One decision.</h2>
+  <p>From a raw customer row to a ready-to-send retention email — every step explainable, every step logged.</p>
+  <div class="pipe-steps">
+    <div class="pipe-step"><div class="pipe-step-num">01</div><div class="pipe-step-name">Ingest</div><div class="pipe-step-desc">Clean the row, engineer 21 behavioral + billing features.</div><div class="pipe-step-tech">pandas · sklearn</div></div>
+    <div class="pipe-step"><div class="pipe-step-num">02</div><div class="pipe-step-name">Predict</div><div class="pipe-step-desc">XGBoost scores churn probability; SMOTE fixes the imbalance.</div><div class="pipe-step-tech">xgboost · SMOTE</div></div>
+    <div class="pipe-step"><div class="pipe-step-num">03</div><div class="pipe-step-name">Explain</div><div class="pipe-step-desc">SHAP TreeExplainer attributes the score, per customer.</div><div class="pipe-step-tech">shap · TreeExplainer</div></div>
+    <div class="pipe-step"><div class="pipe-step-num">04</div><div class="pipe-step-name">Target</div><div class="pipe-step-desc">A T-learner estimates uplift — who actually flips if contacted.</div><div class="pipe-step-tech">T-learner · causal</div></div>
+    <div class="pipe-step"><div class="pipe-step-num">05</div><div class="pipe-step-name">Act</div><div class="pipe-step-desc">Groq drafts a personalized email grounded in the SHAP drivers.</div><div class="pipe-step-tech">groq · FastAPI</div></div>
+  </div>
+</section>
 
-    return {
-      showPredict: tab === 'predict',
-      showExplain: tab === 'explain',
-      showAgent: tab === 'agent',
-      stylePredict: tab === 'predict' ? on : off,
-      styleExplain: tab === 'explain' ? on : off,
-      styleAgent: tab === 'agent' ? on : off,
-      tabPredict: () => this.setState({ tab: 'predict' }),
-      tabExplain: () => this.setState({ tab: 'explain' }),
-      tabAgent: () => this.setState({ tab: 'agent' }),
-      histo,
-    };
-  }
+<section>
+  <div class="sec-label">03 — Core capabilities</div>
+  <h2>Three systems, one outcome.</h2>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('predict')">Prediction</button>
+    <button class="tab-btn" onclick="switchTab('explain')">SHAP explainability</button>
+    <button class="tab-btn" onclick="switchTab('agent')">Retention agent</button>
+  </div>
+  <div class="tab-panel active" id="tab-predict">
+    <div class="tab-content">
+      <h3>Predict who leaves before they do</h3>
+      <p>An XGBoost classifier on 21 engineered features returns a calibrated churn probability for every active account. SMOTE resolves the 26.5% minority-class imbalance that makes naive models predict "stays" for everyone.</p>
+      <ul><li>21 behavioral + billing features from raw data</li><li>Risk bands: low / medium / high, configurable thresholds</li><li>Beats logistic regression & random forest on AUC and calibration</li></ul>
+      <div class="stat-pills"><span class="stat-pill">AUC 0.852</span><span class="stat-pill">F1 0.71</span><span class="stat-pill">CV 0.849 ± 0.011</span></div>
+    </div>
+    <div class="viz-box">
+      <div class="viz-label">Churn probability distribution</div>
+      <div class="histo">
+        <div class="histo-bar" style="height:22%;background:rgba(22,163,74,.45)"></div>
+        <div class="histo-bar" style="height:38%;background:rgba(22,163,74,.45)"></div>
+        <div class="histo-bar" style="height:58%;background:rgba(22,163,74,.45)"></div>
+        <div class="histo-bar" style="height:72%;background:rgba(22,163,74,.45)"></div>
+        <div class="histo-bar" style="height:88%;background:rgba(22,163,74,.45)"></div>
+        <div class="histo-bar" style="height:68%;background:rgba(22,163,74,.45)"></div>
+        <div class="histo-bar" style="height:42%;background:rgba(22,163,74,.45)"></div>
+        <div class="histo-bar" style="height:32%;background:rgba(192,57,27,.4)"></div>
+        <div class="histo-bar" style="height:48%;background:rgba(192,57,27,.5)"></div>
+        <div class="histo-bar" style="height:62%;background:rgba(192,57,27,.6)"></div>
+        <div class="histo-bar" style="height:52%;background:rgba(192,57,27,.7)"></div>
+        <div class="histo-bar" style="height:36%;background:rgba(192,57,27,.75)"></div>
+      </div>
+      <div class="histo-labels">
+        <div class="histo-lbl green">73.5% · Healthy accounts</div>
+        <div class="histo-lbl orange">26.5% · Predicted to churn</div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel" id="tab-explain">
+    <div class="tab-content">
+      <h3>Know exactly why each account is at risk</h3>
+      <p>SHAP TreeExplainer produces per-customer attributions — not just global importance. Every score carries a ranked list of what pushed it up (warm) or held it down (cool).</p>
+      <ul><li>Local explanations per customer, exposed in UI and API</li><li>Warm bars raise risk, cool bars protect against it</li><li>Drives the LLM so emails reference real, specific reasons</li></ul>
+    </div>
+    <div class="viz-box">
+      <div class="viz-label">Customer #1234 — 84% risk</div>
+      <div class="shap-viz">
+        <div class="shap-viz-row"><span class="shap-viz-name">MonthlyCharges</span><div class="shap-viz-track"><div style="height:100%;width:84%;background:#c0391b;border-radius:3px"></div></div><span class="shap-viz-val">+.84</span></div>
+        <div class="shap-viz-row"><span class="shap-viz-name">tenure</span><div class="shap-viz-track"><div style="height:100%;width:71%;background:#cc5533;border-radius:3px"></div></div><span class="shap-viz-val">+.71</span></div>
+        <div class="shap-viz-row"><span class="shap-viz-name">Contract_M2M</span><div class="shap-viz-track"><div style="height:100%;width:43%;background:#d97050;border-radius:3px"></div></div><span class="shap-viz-val">+.43</span></div>
+        <div class="shap-viz-row"><span class="shap-viz-name">OnlineSecurity</span><div class="shap-viz-track"><div style="height:100%;width:27%;background:#3b82f6;border-radius:3px"></div></div><span class="shap-viz-val">−.27</span></div>
+        <div class="shap-viz-row"><span class="shap-viz-name">TechSupport</span><div class="shap-viz-track"><div style="height:100%;width:18%;background:#60a5fa;border-radius:3px"></div></div><span class="shap-viz-val">−.18</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel" id="tab-agent">
+    <div class="tab-content">
+      <h3>Personalized retention, at scale</h3>
+      <p>A T-learner first filters to the accounts a touch will actually move. Then Groq (Llama 3.1) drafts a ~120-word email grounded in that customer's SHAP drivers — handed back through FastAPI for any CRM.</p>
+      <ul><li>Causal uplift filters to true intervention candidates</li><li>Intervention chosen by segment + risk band</li><li>POST /agent → plugs into HubSpot, Salesforce, anything</li></ul>
+    </div>
+    <div class="email-box">
+      <div class="email-label">Draft · grounded in SHAP</div>
+      <div class="email-text"><strong>Subject: We'd love to keep you, Alex</strong><br><br>You've been with us two months — and fiber plans can take adjusting to. We want to make sure you're getting the value you expected.<br><span>As a thank-you, here's 20% off for your next 6 months.</span><br><br>Reply here or grab a quick call — we're glad you're here.</div>
+      <div class="email-chips"><span class="echip">SHAP → reasons</span><span class="echip">uplift → who</span><span class="echip">Groq → words</span></div>
+    </div>
+  </div>
+</section>
 
-  componentDidMount() {
-    // animate the trust-strip counters once
-    const els = this.root ? this.root.querySelectorAll('[data-count]') : document.querySelectorAll('[data-count]');
-    els.forEach(el => {
-      const target = parseInt(el.dataset.count, 10);
-      const isDecimal = target === 852;
-      const dur = 1300, t0 = performance.now();
-      const tick = (now) => {
-        const p = Math.min((now - t0) / dur, 1);
-        const e = 1 - Math.pow(1 - p, 3);
-        el.textContent = isDecimal ? (e * target / 1000).toFixed(3) : String(Math.round(e * target));
-        if (p < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    });
-  }
+<section id="perf">
+  <div class="sec-label">04 — Measured performance</div>
+  <h2>The numbers are real, and calibrated.</h2>
+  <div class="perf-grid">
+    <div>
+      <p class="perf-context">Evaluated on a held-out test split of the Telco churn dataset (7,043 customers). Reported against a logistic-regression baseline. An ECE of 0.034 means the probabilities can be trusted for business thresholds — not just ranking.</p>
+      <div class="code-chips"><span class="code-chip">Brier 0.142</span><span class="code-chip">PR-AUC 0.692</span><span class="code-chip">P@decile 0.78</span></div>
+    </div>
+    <div class="perf-table">
+      <div class="perf-row perf-row-head">
+        <span style="font-family:'Geist Mono',monospace;font-size:9px;color:#9a8070;letter-spacing:.08em">METRIC</span>
+        <div style="display:flex;gap:2rem"><span style="font-family:'Geist Mono',monospace;font-size:9px;color:#c0391b;letter-spacing:.08em">CHURNIQ</span><span style="font-family:'Geist Mono',monospace;font-size:9px;color:#9a8070;letter-spacing:.08em">BASELINE</span></div>
+      </div>
+      <div class="perf-row"><span>ROC-AUC</span><div style="display:flex;gap:2rem"><span class="perf-val">0.852</span><span class="perf-base">0.821</span></div></div>
+      <div class="perf-row"><span>PR-AUC</span><div style="display:flex;gap:2rem"><span class="perf-val">0.692</span><span class="perf-base">0.638</span></div></div>
+      <div class="perf-row"><span>F1 (churn class)</span><div style="display:flex;gap:2rem"><span class="perf-val">0.71</span><span class="perf-base">0.65</span></div></div>
+      <div class="perf-row"><span>Recall (churn class)</span><div style="display:flex;gap:2rem"><span class="perf-val">0.78</span><span class="perf-base">0.71</span></div></div>
+      <div class="perf-row"><span>Brier score</span><div style="display:flex;gap:2rem"><span class="perf-val">0.142</span><span class="perf-base">0.165</span></div></div>
+      <div class="perf-row"><span>5-fold CV AUC</span><div style="display:flex;gap:2rem"><span class="perf-val">0.849 ±.011</span><span class="perf-base">—</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="impact">
+  <div class="sec-label">05 — Business case</div>
+  <h2>What it's worth to ship this.</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem;align-items:start">
+    <div>
+      <p>Modeled on a 50,000-customer mid-market SaaS. These are projected outcomes from the model's measured lift — not booked revenue — but the payback math is hard to argue with.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:1rem">
+        <div style="background:#fff;border:1px solid #e8ddd4;border-radius:8px;padding:.9rem"><div style="font-size:1.5rem;font-weight:800;color:#c0391b;line-height:1;margin-bottom:3px">$2.1M</div><div style="font-size:.78rem;color:#9a8070">projected annual savings · 31% churn reduction</div></div>
+        <div style="background:#fff;border:1px solid #e8ddd4;border-radius:8px;padding:.9rem"><div style="font-size:1.5rem;font-weight:800;color:#c0391b;line-height:1;margin-bottom:3px">30s</div><div style="font-size:.78rem;color:#9a8070">to draft a retention email vs ~5 days</div></div>
+        <div style="background:#fff;border:1px solid #e8ddd4;border-radius:8px;padding:.9rem"><div style="font-size:1.5rem;font-weight:800;color:#c0391b;line-height:1;margin-bottom:3px">100%</div><div style="font-size:.78rem;color:#9a8070">account coverage, up from ~8% manual</div></div>
+        <div style="background:#fff;border:1px solid #e8ddd4;border-radius:8px;padding:.9rem"><div style="font-size:1.5rem;font-weight:800;color:#c0391b;line-height:1;margin-bottom:3px">3.2×</div><div style="font-size:.78rem;color:#9a8070">better targeting vs random outreach</div></div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid #e8ddd4;border-radius:8px;overflow:hidden">
+      <div style="padding:.8rem 1.2rem;background:#faf5ef;border-bottom:1px solid #e8ddd4;display:flex;justify-content:space-between"><span style="font-family:'Geist Mono',monospace;font-size:9px;color:#9a8070;letter-spacing:.08em">BEFORE</span><span style="font-family:'Geist Mono',monospace;font-size:9px;color:#c0391b;letter-spacing:.08em">→ AFTER · MODELED</span></div>
+      <div style="display:flex;justify-content:space-between;padding:.65rem 1.2rem;border-bottom:1px solid #f5ede4;font-size:.85rem"><span style="color:#7a6050">Monthly churn rate</span><span style="font-family:'Geist Mono',monospace;color:#c0391b;font-weight:600">5.5% → 3.8%</span></div>
+      <div style="display:flex;justify-content:space-between;padding:.65rem 1.2rem;border-bottom:1px solid #f5ede4;font-size:.85rem"><span style="color:#7a6050">CSM coverage</span><span style="font-family:'Geist Mono',monospace;color:#c0391b;font-weight:600">8% → 100%</span></div>
+      <div style="display:flex;justify-content:space-between;padding:.65rem 1.2rem;border-bottom:1px solid #f5ede4;font-size:.85rem"><span style="color:#7a6050">Email turnaround</span><span style="font-family:'Geist Mono',monospace;color:#c0391b;font-weight:600">5 days → 30 sec</span></div>
+      <div style="display:flex;justify-content:space-between;padding:.65rem 1.2rem;font-size:.85rem"><span style="color:#7a6050">Targeting</span><span style="font-family:'Geist Mono',monospace;font-size:.78rem;color:#c0391b;font-weight:600">gut feel → uplift-ranked</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>ChurnIQ — XGBoost · SHAP · Causal uplift · Groq · FastAPI</p>
+  <div class="foot-links">
+    <a href="https://github.com/aasthav1811/ChurnIQ" target="_blank">View on GitHub →</a>
+    <a href="index.html">All projects</a>
+  </div>
+</footer>
+
+<script>
+function switchTab(name){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['predict','explain','agent'][i]===name));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
 }
 </script>
 </body>

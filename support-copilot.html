@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support Copilot — Agentic AI Support Workflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#0e1117;color:#9198a1;font-family:'Geist',sans-serif;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#0e1117}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes barGrow{from{width:0}to{width:var(--w)}}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:54px;background:rgba(14,17,23,.88);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07)}
+.nav-brand{font-family:'Geist Mono',monospace;font-size:14px;color:#e6edf3;letter-spacing:-.01em}
+.blink{animation:blink 1s step-end infinite;color:#4ade80}
+.nav-links{display:flex;align-items:center;gap:2rem}
+.nav-links a{font-family:'Geist Mono',monospace;font-size:12px;color:#6e7681;text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:#e6edf3}
+.nav-github{background:#4ade80;color:#0e1117 !important;padding:7px 16px;border-radius:6px;font-weight:600}
+
+header{padding:9rem 2rem 3rem;max-width:860px;margin:0 auto;animation:fadeUp .7s .1s both}
+.hero-chip{font-family:'Geist Mono',monospace;font-size:11px;color:#4ade80;letter-spacing:.1em;margin-bottom:1.4rem;opacity:.8}
+h1{font-size:clamp(2rem,4.5vw,3.5rem);font-weight:700;color:#e6edf3;line-height:1.1;letter-spacing:-.025em;margin:0 0 1.2rem}
+.hero-desc{font-size:.97rem;font-weight:300;color:#7d8590;line-height:1.85;max-width:580px;margin:0 0 2rem}
+.hero-btns{display:flex;gap:.75rem;margin-bottom:3rem}
+.btn-green{font-size:14px;font-weight:500;color:#0e1117;background:#4ade80;padding:11px 22px;text-decoration:none;border-radius:7px;transition:opacity .2s}
+.btn-green:hover{opacity:.85}
+.btn-outline{font-size:14px;font-weight:500;color:#9198a1;border:1px solid rgba(255,255,255,.15);padding:11px 22px;text-decoration:none;border-radius:7px;transition:all .15s}
+.btn-outline:hover{border-color:rgba(255,255,255,.3);color:#e6edf3}
+
+.stat-strip{background:#161b22;border:1px solid rgba(255,255,255,.08);border-radius:10px;display:grid;grid-template-columns:repeat(4,1fr);overflow:hidden;margin-bottom:0}
+.stat{padding:1.4rem 1.6rem;border-right:1px solid rgba(255,255,255,.06)}
+.stat:last-child{border-right:none}
+.stat-val{font-size:1.7rem;font-weight:700;color:#e6edf3;line-height:1;margin-bottom:4px;font-family:'Geist Mono',monospace}
+.stat-val.green{color:#4ade80}
+.stat-label{font-size:.82rem;color:#6e7681}
+
+section{padding:4.5rem 2rem;max-width:860px;margin:0 auto;border-top:1px solid rgba(255,255,255,.06)}
+.sec-comment{font-family:'Geist Mono',monospace;font-size:11px;color:#4ade80;letter-spacing:.04em;opacity:.7;margin-bottom:1rem}
+h2{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;color:#e6edf3;letter-spacing:-.02em;margin:0 0 .8rem;line-height:1.1}
+p{font-size:.93rem;font-weight:300;color:#7d8590;line-height:1.9;margin:0 0 1rem}
+
+/* ACCORDION PIPELINE */
+.pipeline{display:flex;flex-direction:column;gap:.5rem;margin-top:2rem}
+.pipe-node{background:#161b22;border:1px solid rgba(255,255,255,.08);border-radius:8px;overflow:hidden;transition:border-color .15s}
+.pipe-node:hover{border-color:rgba(255,255,255,.14)}
+.pipe-header{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;cursor:pointer;user-select:none}
+.pipe-num{font-family:'Geist Mono',monospace;font-size:11px;color:#4ade80;width:22px;flex-shrink:0;opacity:.7}
+.pipe-name{font-size:.95rem;font-weight:600;color:#e6edf3;margin-right:.6rem}
+.pipe-badge{font-family:'Geist Mono',monospace;font-size:9px;padding:2px 8px;border-radius:20px;letter-spacing:.04em;flex-shrink:0}
+.badge-llm{background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.25)}
+.badge-rules{background:rgba(74,222,128,.08);color:#4ade80;border:1px solid rgba(74,222,128,.2)}
+.badge-rag{background:rgba(251,191,36,.08);color:#fbbf24;border:1px solid rgba(251,191,36,.2)}
+.pipe-desc{font-size:.87rem;color:#6e7681;flex:1}
+.pipe-plus{font-family:'Geist Mono',monospace;font-size:16px;color:#3d444d;margin-left:auto;transition:transform .2s;flex-shrink:0}
+.pipe-node.open .pipe-plus{transform:rotate(45deg);color:#4ade80}
+.pipe-body{display:none;padding:0 1.2rem 1rem 3.4rem;font-size:.87rem;color:#6e7681;line-height:1.75;border-top:1px solid rgba(255,255,255,.05);padding-top:.8rem}
+.pipe-node.open .pipe-body{display:block}
+
+/* TERMINAL DEMO */
+.terminal{background:#0a0d13;border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden;margin-top:2rem}
+.term-bar{display:flex;align-items:center;gap:6px;padding:.7rem 1rem;background:#0f1318;border-bottom:1px solid rgba(255,255,255,.07)}
+.term-dot{width:9px;height:9px;border-radius:50%}
+.term-title{font-family:'Geist Mono',monospace;font-size:10px;color:#3d444d;margin-left:auto}
+.term-body{padding:1.4rem}
+.ticket-meta{display:flex;gap:.4rem;margin-bottom:.7rem;flex-wrap:wrap}
+.tm-badge{font-family:'Geist Mono',monospace;font-size:9px;padding:3px 9px;border-radius:20px;border:1px solid}
+.tm-billing{background:rgba(59,130,246,.08);color:#60a5fa;border-color:rgba(59,130,246,.25)}
+.tm-critical{background:rgba(239,68,68,.08);color:#f87171;border-color:rgba(239,68,68,.25)}
+.tm-angry{background:rgba(249,115,22,.08);color:#fb923c;border-color:rgba(249,115,22,.25)}
+.tm-finance{background:rgba(255,255,255,.04);color:#6e7681;border-color:rgba(255,255,255,.1)}
+.ticket-subject{font-size:.95rem;font-weight:700;color:#e6edf3;margin-bottom:.5rem;letter-spacing:-.01em}
+.ticket-body{font-size:.87rem;color:#7d8590;line-height:1.7;border-left:2px solid rgba(255,255,255,.07);padding-left:.8rem;margin-bottom:1rem}
+.ai-draft{background:#111620;border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:1rem}
+.ai-draft-label{font-family:'Geist Mono',monospace;font-size:9px;color:#4ade80;letter-spacing:.12em;margin-bottom:.7rem;display:flex;align-items:center;gap:6px}
+.ai-draft-label::before{content:'▌';font-size:12px}
+.ai-draft-text{font-size:.87rem;color:#9198a1;line-height:1.75;margin-bottom:.8rem}
+.ai-draft-text strong{color:#4db6a0}
+.draft-btns{display:flex;gap:.4rem}
+.draft-btn{font-size:.83rem;padding:6px 14px;border-radius:5px;border:1px solid rgba(255,255,255,.12);background:transparent;color:#9198a1;cursor:pointer;font-family:'Geist',sans-serif;transition:all .15s}
+.draft-btn:first-child:hover{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:#4ade80}
+.trace-wrap{margin-top:.8rem}
+.trace-label{font-family:'Geist Mono',monospace;font-size:9px;color:#3d444d;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem}
+.trace{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
+.trace-step{font-family:'Geist Mono',monospace;font-size:9px;padding:3px 8px;border:1px solid rgba(255,255,255,.08);border-radius:3px;color:#6e7681}
+.trace-step.active{border-color:rgba(74,222,128,.3);color:#4ade80}
+.trace-arrow{color:#3d444d;font-size:10px}
+.grounded{font-family:'Geist Mono',monospace;font-size:9px;color:#4ade80;margin-top:.8rem;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.15);border-radius:5px;padding:.5rem .8rem}
+
+/* EVAL */
+.eval-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem}
+.eval-rows{display:flex;flex-direction:column;gap:.8rem}
+.eval-row{}
+.eval-row-header{display:flex;justify-content:space-between;margin-bottom:4px;font-size:.87rem}
+.eval-row-label{color:#7d8590}
+.eval-row-val{font-family:'Geist Mono',monospace;color:#4ade80;font-size:.85rem}
+.eval-track{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.eval-fill{height:100%;border-radius:2px;background:#4ade80;animation:barGrow .8s ease both}
+.eval-fill.dim{background:#3d444d}
+.eval-meta{background:#161b22;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:1.2rem}
+.eval-meta-label{font-family:'Geist Mono',monospace;font-size:9px;color:#3d444d;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.8rem}
+.eval-meta-row{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.87rem}
+.eval-meta-row:last-child{border:none}
+.eval-meta-row span:first-child{color:#6e7681}
+.eval-meta-row span:last-child,.eval-meta-row code{font-family:'Geist Mono',monospace;font-size:.83rem;color:#e6edf3}
+.honest-note{margin-top:.6rem;font-size:.83rem;color:#7d8590;line-height:1.65}
+.honest-note strong{color:#e6edf3}
+
+/* STACK */
+.stack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-top:2rem}
+.stack-card{background:#161b22;border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:1rem}
+.stack-name{font-family:'Geist Mono',monospace;font-size:11px;color:#4ade80;margin-bottom:.3rem}
+.stack-desc{font-size:.82rem;color:#6e7681;line-height:1.5}
+
+footer{border-top:1px solid rgba(255,255,255,.06);padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center}
+footer div{font-family:'Geist Mono',monospace;font-size:10px;color:#3d444d}
+footer a{font-family:'Geist Mono',monospace;font-size:10px;color:#6e7681;text-decoration:none;margin-left:1.5rem}
+footer a:hover{color:#e6edf3}
+
+@media(max-width:768px){nav{padding:0 1rem}header,section{padding-left:1rem;padding-right:1rem}.stat-strip{grid-template-columns:1fr 1fr}.eval-grid,.stack-grid{grid-template-columns:1fr}footer{flex-direction:column;gap:.5rem;padding:1rem}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand">$ support-copilot<span class="blink">_</span></div>
+  <div class="nav-links">
+    <a href="#pipeline">Pipeline</a>
+    <a href="#demo">Demo</a>
+    <a href="#eval">Evaluation</a>
+    <a href="https://github.com/aasthav1811/Autonomous-Support-Resolution-Copilot" target="_blank" class="nav-github">GitHub ↗</a>
+  </div>
+</nav>
+
+<header>
+  <div class="hero-chip">Agentic AI · LangGraph · RAG · 100% local</div>
+  <h1>A six-agent pipeline that resolves support tickets — grounded in your knowledge base.</h1>
+  <p class="hero-desc">Triage, route, retrieve, draft, escalate, follow up. Every reply is checked against the docs before a human ever sees it — running entirely on a local 7B model for $0 per ticket.</p>
+  <div class="hero-btns">
+    <a href="#pipeline" class="btn-green">Inspect the agents →</a>
+    <a href="https://support-copilot-frontend-aastha-v-projects.vercel.app" target="_blank" class="btn-outline">Live frontend ↗</a>
+  </div>
+  <div class="stat-strip">
+    <div class="stat"><div class="stat-val">6</div><div class="stat-label">specialized agents</div></div>
+    <div class="stat"><div class="stat-val green">$0.00</div><div class="stat-label">cost per ticket</div></div>
+    <div class="stat"><div class="stat-val green">84%</div><div class="stat-label">responses grounded</div></div>
+    <div class="stat"><div class="stat-val green">88%</div><div class="stat-label">routing accuracy</div></div>
+  </div>
+</header>
+
+<section id="pipeline">
+  <div class="sec-comment">// architecture</div>
+  <h2>Six agents. One typed state.</h2>
+  <p>A LangGraph StateGraph passes one shared state down the chain. Click any node to see what it does — note only two of the six call the LLM.</p>
+  <div class="pipeline">
+    <div class="pipe-node" onclick="this.classList.toggle('open')">
+      <div class="pipe-header"><span class="pipe-num">01</span><span class="pipe-name">Intake agent</span><span class="pipe-badge badge-llm">LLM</span><span class="pipe-desc" style="margin-left:.5rem">Classifies every ticket by category, urgency and sentiment.</span><span class="pipe-plus">+</span></div>
+      <div class="pipe-body">Outputs category / urgency / sentiment at temperature 0 for determinism. Includes fallback JSON parsing for local-model quirks.</div>
+    </div>
+    <div class="pipe-node" onclick="this.classList.toggle('open')">
+      <div class="pipe-header"><span class="pipe-num">02</span><span class="pipe-name">Routing agent</span><span class="pipe-badge badge-rules">Rules</span><span class="pipe-desc" style="margin-left:.5rem">Deterministically assigns the ticket to the right team.</span><span class="pipe-plus">+</span></div>
+      <div class="pipe-body">Pure logic, zero LLM calls. Maps category → team (Finance / Engineering / Logistics / Account) from a config dict.</div>
+    </div>
+    <div class="pipe-node" onclick="this.classList.toggle('open')">
+      <div class="pipe-header"><span class="pipe-num">03</span><span class="pipe-name">Retrieval agent</span><span class="pipe-badge badge-rag">RAG</span><span class="pipe-desc" style="margin-left:.5rem">Pulls the top-3 knowledge-base chunks, filtered by category.</span><span class="pipe-plus">+</span></div>
+      <div class="pipe-body">all-MiniLM-L6-v2 embeddings over ChromaDB. Category-aware filtering lifted hit-rate from 78% → 92%. No API calls.</div>
+    </div>
+    <div class="pipe-node" onclick="this.classList.toggle('open')">
+      <div class="pipe-header"><span class="pipe-num">04</span><span class="pipe-name">Drafting agent</span><span class="pipe-badge badge-llm">LLM</span><span class="pipe-desc" style="margin-left:.5rem">Writes an empathetic reply grounded strictly in retrieved chunks.</span><span class="pipe-plus">+</span></div>
+      <div class="pipe-body">Temperature 0.3 for slight variation. The prompt forbids inventing information and leads with an apology on angry sentiment.</div>
+    </div>
+    <div class="pipe-node" onclick="this.classList.toggle('open')">
+      <div class="pipe-header"><span class="pipe-num">05</span><span class="pipe-name">Escalation agent</span><span class="pipe-badge badge-rules">Rules</span><span class="pipe-desc" style="margin-left:.5rem">Flags tickets that need a human.</span><span class="pipe-plus">+</span></div>
+      <div class="pipe-body">Three triggers: urgency in {high, critical}, sentiment == angry, or zero KB matches. Saves the reason for the reviewer.</div>
+    </div>
+    <div class="pipe-node" onclick="this.classList.toggle('open')">
+      <div class="pipe-header"><span class="pipe-num">06</span><span class="pipe-name">Follow-up agent</span><span class="pipe-badge badge-rules">Rules</span><span class="pipe-desc" style="margin-left:.5rem">Schedules a follow-up on any escalated or angry ticket.</span><span class="pipe-plus">+</span></div>
+      <div class="pipe-body">Sets followup_required = true. In production this fires a Celery task or Slack alert after 24h.</div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="sec-comment">// live demo</div>
+  <h2>An angry billing ticket, resolved</h2>
+  <p>A real example from the eval set — billing category, critical urgency, angry sentiment.</p>
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="term-dot" style="background:#ff5f57"></div>
+      <div class="term-dot" style="background:#febc2e"></div>
+      <div class="term-dot" style="background:#28c840"></div>
+      <span class="term-title">support-copilot · localhost:8501</span>
+    </div>
+    <div class="term-body">
+      <div class="ticket-meta">
+        <span class="tm-badge tm-billing">billing</span>
+        <span class="tm-badge tm-critical">critical</span>
+        <span class="tm-badge tm-angry">angry</span>
+        <span class="tm-badge tm-finance">→ Finance</span>
+      </div>
+      <div class="ticket-subject">CHARGED TWICE — REFUND NOW</div>
+      <div class="ticket-body">"Your system charged my card THREE times for one subscription! This is fraud. I want all my money back TODAY or I'm disputing with my bank."</div>
+      <div class="ai-draft">
+        <div class="ai-draft-label">AI DRAFT RESPONSE</div>
+        <div class="ai-draft-text">I'm sorry for this experience — being charged multiple times is unacceptable, and I've flagged your case as urgent.<br><br>Per our billing policy, refunds process to your original payment method within 5–10 business days. Please email <strong>billing@company.com</strong> with your transaction IDs and we'll resolve this right away.<br><br>I've escalated this to our Finance team for priority handling.</div>
+        <div class="draft-btns">
+          <button class="draft-btn" onclick="this.textContent=this.textContent==='Approve & send'?'✓ Sent':'Approve & send'">Approve & send</button>
+          <button class="draft-btn">Edit</button>
+          <button class="draft-btn">Reject</button>
+        </div>
+      </div>
+      <div class="trace-wrap">
+        <div class="trace-label">Agent trace</div>
+        <div class="trace">
+          <span class="trace-step active">Intake</span><span class="trace-arrow">→</span>
+          <span class="trace-step active">Routing</span><span class="trace-arrow">→</span>
+          <span class="trace-step">Retrieval</span><span class="trace-arrow">→</span>
+          <span class="trace-step">Drafting</span><span class="trace-arrow">→</span>
+          <span class="trace-step">Escalation</span><span class="trace-arrow">→</span>
+          <span class="trace-step">Follow-up</span>
+        </div>
+      </div>
+      <div class="grounded">✓ groundedness check passed — response supported by retrieved context</div>
+    </div>
+  </div>
+</section>
+
+<section id="eval">
+  <div class="sec-comment">// evaluation</div>
+  <h2>Scored on 50 labelled tickets</h2>
+  <p>A held-out set across five categories — billing, technical, account, shipping, general — run end-to-end through Qwen2.5-Coder 7B on Ollama. Numbers below are computed from the eval log in the repo.</p>
+  <div class="eval-grid">
+    <div class="eval-rows">
+      <div class="eval-row"><div class="eval-row-header"><span class="eval-row-label">Category routing</span><span class="eval-row-val">88% · 44/50</span></div><div class="eval-track"><div class="eval-fill" style="--w:88%;width:88%"></div></div></div>
+      <div class="eval-row"><div class="eval-row-header"><span class="eval-row-label">Groundedness (faithfulness)</span><span class="eval-row-val">84% · 42/50</span></div><div class="eval-track"><div class="eval-fill" style="--w:84%;width:84%"></div></div></div>
+      <div class="eval-row"><div class="eval-row-header"><span class="eval-row-label">Escalation decision</span><span class="eval-row-val">80% · 40/50</span></div><div class="eval-track"><div class="eval-fill" style="--w:80%;width:80%"></div></div></div>
+      <div class="eval-row"><div class="eval-row-header"><span class="eval-row-label">Sentiment classification</span><span class="eval-row-val">78% · 39/50</span></div><div class="eval-track"><div class="eval-fill" style="--w:78%;width:78%"></div></div></div>
+      <div class="eval-row"><div class="eval-row-header"><span class="eval-row-label">Urgency (exact match)</span><span class="eval-row-val" style="font-family:'Geist Mono',monospace;font-size:.82rem;color:#6e7681">56% · often off-by-one</span></div><div class="eval-track"><div class="eval-fill dim" style="--w:56%;width:56%"></div></div></div>
+    </div>
+    <div class="eval-meta">
+      <div class="eval-meta-label">Run characteristics</div>
+      <div class="eval-meta-row"><span>Avg latency / ticket</span><span>~10.4 s</span></div>
+      <div class="eval-meta-row"><span>RAG docs retrieved</span><code>top-3 / ticket</code></div>
+      <div class="eval-meta-row"><span>Hallucinations caught</span><code>8 / 50 flagged</code></div>
+      <div class="eval-meta-row"><span>Categories covered</span><span>5</span></div>
+      <div class="eval-meta-row"><span>External API cost</span><span style="color:#4ade80">$0.00</span></div>
+      <div class="honest-note"><strong>Honest read:</strong> urgency is the weak spot — the model usually lands one level off (critical↔high). Routing and groundedness are the strengths.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-comment">// stack</div>
+  <h2>Entirely free, entirely local</h2>
+  <p>No API keys, no cloud bills — it runs on a laptop.</p>
+  <div class="stack-grid">
+    <div class="stack-card"><div class="stack-name">Ollama · Qwen2.5-Coder 7B</div><div class="stack-desc">Local LLM inference · intake + drafting only</div></div>
+    <div class="stack-card"><div class="stack-name">LangGraph</div><div class="stack-desc">6-node StateGraph orchestration</div></div>
+    <div class="stack-card"><div class="stack-name">ChromaDB</div><div class="stack-desc">Local vector store for RAG</div></div>
+    <div class="stack-card"><div class="stack-name">all-MiniLM-L6-v2</div><div class="stack-desc">Local sentence embeddings</div></div>
+    <div class="stack-card"><div class="stack-name">FastAPI</div><div class="stack-desc">REST backend · /process_ticket</div></div>
+    <div class="stack-card"><div class="stack-name">Streamlit · Next.js</div><div class="stack-desc">Reviewer UI + deployed frontend</div></div>
+  </div>
+</section>
+
+<footer>
+  <div>LangGraph · ChromaDB · Ollama · FastAPI</div>
+  <div>
+    <a href="https://github.com/aasthav1811/Autonomous-Support-Resolution-Copilot" target="_blank">Source ↗</a>
+    <a href="index.html">All projects</a>
+  </div>
+</footer>
+</body>
+</html>
